@@ -1,0 +1,7 @@
+D: 784
+M: 784
+batch_size: 1000
+lr: 0.001
+max_patience: 20
+num_epochs: 100
+num_flows: 4

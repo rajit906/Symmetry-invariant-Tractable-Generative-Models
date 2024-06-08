@@ -1,0 +1,7 @@
+D: 784
+M: 1568
+batch_size: 256
+lr: 0.01
+max_patience: 20
+num_epochs: 100
+num_flows: 8

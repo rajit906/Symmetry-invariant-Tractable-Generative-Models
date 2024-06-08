@@ -23,7 +23,7 @@ def evaluation(test_loader, name=None, model_best=None, epoch=None):
 
     return loss
 
-def training(name, max_patience, num_epochs, model, optimizer, training_loader, val_loader):
+def training(name, result_dir, max_patience, num_epochs, model, optimizer, training_loader, val_loader):
     nll_val = []
     best_nll = 1000.
     patience = 0
@@ -46,12 +46,12 @@ def training(name, max_patience, num_epochs, model, optimizer, training_loader, 
 
         if e == 0:
             print('saved!')
-            torch.save(model, name + '.model')
+            torch.save(model, result_dir + '/' + name + '.model')
             best_nll = loss_val
         else:
             if loss_val < best_nll:
                 print('saved!')
-                torch.save(model, name + '.model')
+                torch.save(model, result_dir + '/' + name + '.model')
                 best_nll = loss_val
                 patience = 0
 

@@ -44,7 +44,7 @@ def log_integer_probability(x, mean, logscale):
 
     return logp
 
-def samples_real(name, test_loader):
+def samples_real(name, test_loader, D):
     # REAL-------
     num_x = 4
     num_y = 4
@@ -52,7 +52,7 @@ def samples_real(name, test_loader):
 
     fig, ax = plt.subplots(num_x, num_y)
     for i, ax in enumerate(ax.flatten()):
-        plottable_image = np.reshape(x[i], (8, 8))
+        plottable_image = np.reshape(x[i], (D, D))
         ax.imshow(plottable_image, cmap='gray')
         ax.axis('off')
 
@@ -60,7 +60,7 @@ def samples_real(name, test_loader):
     plt.close()
 
 
-def samples_generated(name, data_loader, extra_name=''):
+def samples_generated(name, data_loader, D, extra_name=''):
     x = next(iter(data_loader)).detach().numpy()
 
     # GENERATIONS-------
@@ -74,7 +74,7 @@ def samples_generated(name, data_loader, extra_name=''):
 
     fig, ax = plt.subplots(num_x, num_y)
     for i, ax in enumerate(ax.flatten()):
-        plottable_image = np.reshape(x[i], (8, 8))
+        plottable_image = np.reshape(x[i], (D, D))
         ax.imshow(plottable_image, cmap='gray')
         ax.axis('off')
 
