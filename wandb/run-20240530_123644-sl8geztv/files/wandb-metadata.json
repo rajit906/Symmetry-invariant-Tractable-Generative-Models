@@ -1,0 +1,36 @@
+{
+    "os": "macOS-13.3-arm64-arm-64bit",
+    "python": "3.11.4",
+    "heartbeatAt": "2024-05-30T11:36:46.111266",
+    "startedAt": "2024-05-30T11:36:44.938590",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "https://github.com/rajit906/Symmetry-invariant-Tractable-Generative-Models.git",
+        "commit": "d2dc906673d5859255b9eae7e6a5834821170a4b"
+    },
+    "email": null,
+    "root": "/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models",
+    "host": "Rajits-MacBook-Air.local",
+    "username": "rajit906",
+    "executable": "/usr/local/bin/python3",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "/": {
+            "total": 228.27386474609375,
+            "used": 11.354015350341797
+        }
+    },
+    "gpuapple": {
+        "type": "arm",
+        "vendor": "Apple"
+    },
+    "memory": {
+        "total": 8.0
+    }
+}
