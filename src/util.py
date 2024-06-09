@@ -88,3 +88,41 @@ def plot_curve(name, nll_val):
     plt.ylabel('nll')
     plt.savefig(name + '_nll_val_curve.pdf', bbox_inches='tight')
     plt.close()
+
+def translate_img_batch(img_batch, shift_left = 0, shift_down = 0, shift_right = 0, shift_up = 0):
+    batch_size = img_batch.size(0)
+    old_img_batch = img_batch.view(batch_size, 1, 28, 28).clone()
+    new_img_batch = torch.zeros_like(old_img_batch)
+    if shift_left > 0 and shift_down > 0:
+        new_img_batch[:, 0, shift_down:, :-shift_left] = old_img_batch[:, 0, :-shift_down, shift_left:]
+    elif shift_left > 0:
+        new_img_batch[:, 0, :, :-shift_left] = old_img_batch[:, 0, :, shift_left:]
+    elif shift_down > 0:
+        new_img_batch[:, 0, shift_down:, :] = old_img_batch[:, 0, :-shift_down, :]
+    elif shift_right > 0 and shift_up > 0:
+        new_img_batch[:, :, :-shift_up, shift_right:] = old_img_batch[:, :, shift_up:, :-shift_right]
+    elif shift_right > 0:
+        new_img_batch[:, :, :, :-shift_right] = old_img_batch[:, :, :, shift_right:]
+    elif shift_up > 0:
+        new_img_batch[:, :, :-shift_up, :] = old_img_batch[:, :, shift_up:, :]
+    else:
+        new_img_batch = old_img_batch
+
+    new_img_batch_flat = new_img_batch.view(batch_size, 784)
+    return new_img_batch_flat
+
+def visualize_translated_images(original_images, translated_images):
+    original_images = original_images.view(-1, 28, 28)
+    translated_images = translated_images.view(-1, 28, 28)
+    batch_size = original_images.size(0)
+    fig, axes = plt.subplots(2, batch_size, figsize=(15, 5))
+    for i in range(batch_size):
+        axes[0, i].imshow(original_images[i].cpu().numpy(), cmap='gray')
+        axes[0, i].axis('off')
+        axes[0, i].set_title(f'Original {i+1}')
+        
+        axes[1, i].imshow(translated_images[i].cpu().numpy(), cmap='gray')
+        axes[1, i].axis('off')
+        axes[1, i].set_title(f'Translated {i+1}')
+    plt.tight_layout()
+    plt.show()

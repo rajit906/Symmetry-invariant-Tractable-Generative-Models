@@ -42,7 +42,7 @@ def load_data(name):
 
         transform = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize((0.5,), (0.5,)),
+        #transforms.Normalize((0.5,), (0.5,)),
         transforms.Lambda(lambda x: x.view(-1))])
 
         train_data = MNISTWithoutLabels(root='./data', train=True, download=True, transform=transform)
