@@ -1,5 +1,7 @@
 import torch
 import numpy as np
+from util import translate_img_batch
+import random
 
 def evaluation(test_loader, name=None, model_best=None, epoch=None):
     # EVALUATION
@@ -23,10 +25,18 @@ def evaluation(test_loader, name=None, model_best=None, epoch=None):
 
     return loss
 
-def training(name, result_dir, max_patience, num_epochs, model, optimizer, training_loader, val_loader):
+def training(name, result_dir, max_patience, num_epochs, model, optimizer, training_loader, val_loader, lam = 0.):
     nll_val = []
     best_nll = 1000.
     patience = 0
+    translation_repository = [(1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1), (1,1,0,0), (0,0,1,1), 
+                              (2,1,0,0), (1,2,0,0), (0,0,1,2), (0,0,2,1), (2,2,0,0), (0,0,2,2),
+                              (2,0,0,0), (0,2,0,0), (0,0,2,0), (0,0,0,2), (3,0,0,0), (0,3,0,0), 
+                              (0,0,3,0), (0,0,0,3), (3,3,0,0), (0,0,3,3), (3,2,0,0), (0,0,3,2),
+                              (3,1,0,0), (0,0,3,1), (1,3,0,0), (0,0,1,3), (4,0,0,0), (0,4,0,0),
+                              (0,0,4,0), (0,0,0,4), (4,1,0,0), (1,4,0,0), (4,2,0,0), (2,4,0,0),
+                              (4,3,0,0), (3,4,0,0), (4,4,0,0), (4,4,0,0), (0,0,4,1), (0,0,1,4),
+                              (0,0,4,2), (0,0,2,4), (0,0,4,3), (0,0,3,4), (0,0,4,4), (0,0,4,4)]
 
     # Main loop
     for e in range(num_epochs):
@@ -35,6 +45,14 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, train
         for indx_batch, batch in enumerate(training_loader):
             
             loss = model.forward(batch)
+            if lam > 0:
+                sampled_translations = random.sample(translation_repository, 5)
+                s = 0
+                for translation in sampled_translations:
+                    shift_left, shift_down, shift_right, shift_up = translation
+                    translated_img = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up)
+                    s += (loss - model.forward(translated_img))**2
+                loss += loss + lam * s**2 
 
             optimizer.zero_grad()
             loss.backward(retain_graph=True)
