@@ -25,7 +25,7 @@ def evaluation(test_loader, name=None, model_best=None, epoch=None):
 
     return loss
 
-def training(name, result_dir, max_patience, num_epochs, model, optimizer, training_loader, val_loader, lam = 0.):
+def training(name, result_dir, max_patience, num_epochs, model, optimizer, training_loader, val_loader, device, lam = 0.):
     nll_val = []
     best_nll = 1000.
     patience = 0
@@ -43,14 +43,14 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, train
         # TRAINING
         model.train()
         for indx_batch, batch in enumerate(training_loader):
-            
+            batch = batch.to(device)
             loss = model.forward(batch)
             if lam > 0:
                 sampled_translations = random.sample(translation_repository, 5)
                 s = 0
                 for translation in sampled_translations:
                     shift_left, shift_down, shift_right, shift_up = translation
-                    translated_img = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up)
+                    translated_img = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up).to(device)
                     s += (loss - model.forward(translated_img))**2
                 loss += loss + lam * s**2 
 

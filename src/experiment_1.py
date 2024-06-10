@@ -17,14 +17,16 @@ from train import evaluation, training
 from data import load_data
 from neural_networks import nnetts
 
-_, _, test_data = load_data('mnist')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+_, _, test_data = load_data('mnist', device)
 test_loader = DataLoader(test_data, batch_size=1, shuffle=False)
 
 result_dir = 'results/exp_1'
 if not(os.path.exists(result_dir)):
     os.mkdir(result_dir)
 name = 'best_idf-4'
-model = torch.load(result_dir + '/' + name + '.model')
+model = torch.load(result_dir + '/' + name + '.model').to(device)
 
 translations = [(1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1), (1,1,0,0), (0,0,1,1), (2,1,0,0), (1,2,0,0), (0,0,1,2), (0,0,2,1), (2,2,0,0), (0,0,2,2)]
 lls_translation = {}
