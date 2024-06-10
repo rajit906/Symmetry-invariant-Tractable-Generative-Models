@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from pytorch_model_summary import summary
+#from pytorch_model_summary import summary
 import matplotlib.pyplot as plt
 import yaml
 import pickle as pkl
