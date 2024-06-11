@@ -6,10 +6,34 @@ import numpy as np
 
 
 class IDF4(nn.Module):
-    def __init__(self, netts, num_flows, D=2):
-        super(IDF4, self).__init__()
+    """
+    An implementation of the IDF (Integer Discrete Flow) model.
 
-        print('IDF by JT.')
+    This class defines a flow-based generative model designed to work with discrete integer data.
+    The model uses coupling layers and a series of transformations to model the data distribution.
+    
+    Attributes:
+
+        t_a (torch.nn.ModuleList): A list of transformation networks for the 'a' component.
+        t_b (torch.nn.ModuleList): A list of transformation networks for the 'b' component.
+        t_c (torch.nn.ModuleList): A list of transformation networks for the 'c' component.
+        t_d (torch.nn.ModuleList): A list of transformation networks for the 'd' component.
+        num_flows (int): The number of flow steps in the model.
+        round (function): A function for rounding with straight-through gradient estimation.
+        mean (torch.nn.Parameter): The mean parameter of the prior distribution.
+        logscale (torch.nn.Parameter): The log-scale parameter of the prior distribution.
+        D (int): The dimensionality of the input data.
+    """
+    def __init__(self, netts, num_flows, D=2):
+        """
+        Initializes the IDF4 model.
+
+        Args:
+            netts (list): A list of functions to create transformation networks.
+            num_flows (int): The number of flow steps.
+            D (int): The dimensionality of the input data (default is 2).
+        """
+        super(IDF4, self).__init__()
         
         self.t_a = torch.nn.ModuleList([netts[0]() for _ in range(num_flows)])
         self.t_b = torch.nn.ModuleList([netts[1]() for _ in range(num_flows)])
@@ -26,6 +50,17 @@ class IDF4(nn.Module):
         self.D = D
 
     def coupling(self, x, index, forward=True):
+        """
+        Applies the coupling layer transformations.
+
+        Args:
+            x (torch.Tensor): The input tensor to transform.
+            index (int): The index of the flow step.
+            forward (bool): Direction of transformation. True for forward, False for inverse (default is True).
+
+        Returns:
+            torch.Tensor: The transformed tensor.
+        """
 
         (xa, xb, xc, xd) = torch.chunk(x, 4, 1)
         
@@ -43,13 +78,40 @@ class IDF4(nn.Module):
         return torch.cat((ya, yb, yc, yd), 1)
 
     def permute(self, x):
+        """
+        Permutes the input tensor by flipping it along the last dimension.
+
+        Args:
+            x (torch.Tensor): The input tensor to permute.
+
+        Returns:
+            torch.Tensor: The permuted tensor.
+        """
         return x.flip(1)
     
     def log_prior(self, x):
+        """
+        Computes the log-prior probability of the given tensor.
+
+        Args:
+            x (torch.Tensor): The input tensor.
+
+        Returns:
+            torch.Tensor: The log-prior probability of the input tensor.
+        """
         log_p = log_integer_probability(x, self.mean, self.logscale)
         return log_p.sum(1)
 
     def f(self, x):
+        """
+        Applies the forward flow transformations.
+
+        Args:
+            x (torch.Tensor): The input tensor to transform.
+
+        Returns:
+            torch.Tensor: The transformed tensor.
+        """
         z = x
         for i in range(self.num_flows):
             z = self.coupling(z, i, forward=True)
@@ -58,6 +120,15 @@ class IDF4(nn.Module):
         return z
 
     def f_inv(self, z):
+        """
+        Applies the inverse flow transformations.
+
+        Args:
+            z (torch.Tensor): The transformed tensor to invert.
+
+        Returns:
+            torch.Tensor: The inverted tensor.
+        """
         x = z
         for i in reversed(range(self.num_flows)):
             x = self.permute(x)
@@ -66,6 +137,16 @@ class IDF4(nn.Module):
         return x
 
     def forward(self, x, reduction='avg'):
+        """
+        Computes the forward pass of the model and the negative log-prior.
+
+        Args:
+            x (torch.Tensor): The input tensor.
+            reduction (str): The reduction method to apply to the log-prior ('sum' or 'avg', default is 'avg').
+
+        Returns:
+            torch.Tensor: The negative log-prior of the transformed tensor.
+        """
         z = self.f(x)
         if reduction == 'sum':
             return -self.log_prior(z).sum()
@@ -73,15 +154,31 @@ class IDF4(nn.Module):
             return -self.log_prior(z).mean()
         
     def prior_sample(self, batchSize, D=2):
-        # Sample from logistic
+        """
+        Samples from the prior (Logistic) distribution.
+
+        Args:
+            batchSize (int): The number of samples to generate.
+            D (int): The dimensionality of the data (default is 2).
+
+        Returns:
+            torch.Tensor: The sampled tensor from the prior distribution.
+        """
         y = torch.rand(batchSize, self.D)
         x = torch.exp(self.logscale) * torch.log(y / (1. - y)) + self.mean
         # And then round it to an integer.
         return torch.round(x)
 
     def sample(self, batchSize):
-        # sample z:
+        """
+        Generates samples from the model.
+
+        Args:
+            batchSize (int): The number of samples to generate.
+
+        Returns:
+            torch.Tensor: The generated samples.
+        """
         z = self.prior_sample(batchSize=batchSize, D=self.D)
-        # x = f^-1(z)
-        x = self.f_inv(z)
+        x = self.f_inv(z) # = f^-1(z)
         return x.view(batchSize, 1, self.D)

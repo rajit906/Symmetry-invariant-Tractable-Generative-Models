@@ -31,9 +31,10 @@ name = 'idf-4'
 D = 784   # input dimension
 M = D  # the number of neurons in scale (s) and translation (t) nets
 lr = 1e-3 # learning rate
-num_epochs = 100 # max. number of epochs
+num_epochs = 10 # max. number of epochs
 max_patience = 20 # an early stopping is used, if training doesn't improve for longer than 20 epochs, it is stopped
 num_flows = 4 # The number of invertible transformations
+lam = 0.1 # Regularization Hyperparameter
 
 hyperparameters = {'D': D, 
                    'M': M,
@@ -41,7 +42,8 @@ hyperparameters = {'D': D,
                    'num_epochs': num_epochs,
                    'max_patience': max_patience,
                    'num_flows': num_flows,
-                   'batch_size': batch_size
+                   'batch_size': batch_size,
+                   'lambda': lam
                     }
 
 with open(result_dir + '/hyperparameters.yaml', 'w') as file:
@@ -53,7 +55,7 @@ model = idf.IDF4(netts, num_flows, D=D).to(device)
 optimizer = torch.optim.Adamax([p for p in model.parameters() if p.requires_grad == True], lr=lr)
 # Training procedure
 nll_val = training(name=name, result_dir = result_dir, max_patience=max_patience, num_epochs=num_epochs, model=model, optimizer=optimizer,
-                       training_loader=training_loader, val_loader=val_loader, device=device)
+                       training_loader=training_loader, val_loader=val_loader, device=device, lam=lam)
 
 with open(result_dir + '/train_loss.txt', "w") as file:
     for item in nll_val:

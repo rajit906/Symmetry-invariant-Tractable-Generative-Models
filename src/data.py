@@ -29,11 +29,34 @@ class Digits(Dataset):
     
 # Custom dataset class to return only images
 class MNISTWithoutLabels(datasets.MNIST):
+    """
+    Custom dataset class for MNIST that returns only images, ignoring the labels.
+
+    This class inherits from torchvision.datasets.MNIST and overrides the __getitem__ method to return only the images.
+    """
     def __getitem__(self, index):
+        """
+        Returns the image at the specified index, ignoring the label.
+
+        Args:
+            index (int): The index of the image to retrieve.
+
+        Returns:
+            PIL.Image.Image: The image at the specified index.
+        """
         img, _ = super().__getitem__(index)  # Ignore the label
         return img
 
 def load_data(name):
+    """
+    Loads the specified dataset and returns the training, validation, and test datasets.
+
+    Args:
+        name (str): The name of the dataset to load. Options are 'sklearn' and 'mnist'.
+
+    Returns:
+        tuple: A tuple containing the training dataset, validation dataset, and test dataset.
+    """
     if name == 'sklearn':
         train_data = Digits(mode='train')
         val_data = Digits(mode='val')
@@ -50,4 +73,5 @@ def load_data(name):
         train_size = int(0.9 * len(train_data))
         val_size = len(train_data) - train_size
         train_data, val_data = random_split(train_data, [train_size, val_size])
+        
     return (train_data, val_data, test_data)
