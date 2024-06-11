@@ -3,7 +3,7 @@ import os
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from pytorch_model_summary import summary
+#from pytorch_model_summary import summary
 import yaml
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -16,7 +16,7 @@ from neural_networks import nnetts
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-batch_size = 1000
+batch_size = 112
 train_data, val_data, test_data = load_data('mnist')
 # Create data loaders
 training_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
@@ -29,12 +29,12 @@ if not(os.path.exists(result_dir)):
 name = 'idf-4'
 
 D = 784   # input dimension
-M = D  # the number of neurons in scale (s) and translation (t) nets
+M = 2 * D  # the number of neurons in scale (s) and translation (t) nets
 lr = 1e-3 # learning rate
-num_epochs = 10 # max. number of epochs
-max_patience = 20 # an early stopping is used, if training doesn't improve for longer than 20 epochs, it is stopped
+num_epochs = 200 # max. number of epochs
+max_patience = max(min(num_epochs//5,5),20) # an early stopping is used, if training doesn't improve for longer than 20 epochs, it is stopped
 num_flows = 4 # The number of invertible transformations
-lam = 0.1 # Regularization Hyperparameter
+lam = 0. # Regularization Hyperparameter
 
 hyperparameters = {'D': D, 
                    'M': M,
@@ -57,7 +57,7 @@ optimizer = torch.optim.Adamax([p for p in model.parameters() if p.requires_grad
 nll_val = training(name=name, result_dir = result_dir, max_patience=max_patience, num_epochs=num_epochs, model=model, optimizer=optimizer,
                        training_loader=training_loader, val_loader=val_loader, device=device, lam=lam)
 
-with open(result_dir + '/train_loss.txt', "w") as file:
+with open(result_dir + '/val_loss.txt', "w") as file:
     for item in nll_val:
         file.write(f"{item}\n")
 

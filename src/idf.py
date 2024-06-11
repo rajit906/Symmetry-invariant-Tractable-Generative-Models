@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from util import RoundStraightThrough, log_integer_probability
-import numpy as np
+from util import RoundStraightThrough, log_discretized_logistic, log_mixture_discretized_logistic
 
 
 class IDF4(nn.Module):
@@ -46,6 +44,7 @@ class IDF4(nn.Module):
         
         self.mean = nn.Parameter(torch.zeros(1, D))
         self.logscale = nn.Parameter(torch.ones(1, D))
+        self.pi = nn.Parameter(torch.ones(1, 3) / 3.) # We are setting latent number of variables in mixture model to be 3.
 
         self.D = D
 
@@ -89,7 +88,7 @@ class IDF4(nn.Module):
         """
         return x.flip(1)
     
-    def log_prior(self, x):
+    def log_prior(self, x, mixture = False):
         """
         Computes the log-prior probability of the given tensor.
 
@@ -99,7 +98,10 @@ class IDF4(nn.Module):
         Returns:
             torch.Tensor: The log-prior probability of the input tensor.
         """
-        log_p = log_integer_probability(x, self.mean, self.logscale)
+        if mixture:
+            log_p = log_mixture_discretized_logistic(x, self.mean, self.logscale, self.pi)
+        else:
+            log_p = log_discretized_logistic(x, self.mean, self.logscale)
         return log_p.sum(1)
 
     def f(self, x):
@@ -153,9 +155,9 @@ class IDF4(nn.Module):
         else:
             return -self.log_prior(z).mean()
         
-    def prior_sample(self, batchSize, D=2):
+    def prior_sample(self, batchSize, D=2, mixture = False, inverse_bin_width = 1.):
         """
-        Samples from the prior (Logistic) distribution.
+        Samples from the prior (Logistic, Discretized Logistic, Discretized Logistic Mixture) distribution.
 
         Args:
             batchSize (int): The number of samples to generate.
@@ -164,10 +166,12 @@ class IDF4(nn.Module):
         Returns:
             torch.Tensor: The sampled tensor from the prior distribution.
         """
-        y = torch.rand(batchSize, self.D)
-        x = torch.exp(self.logscale) * torch.log(y / (1. - y)) + self.mean
-        # And then round it to an integer.
-        return torch.round(x)
+        if mixture:
+            pass
+        else:
+            y = torch.rand(batchSize, self.D)
+            x = torch.exp(self.logscale) * torch.log(y / (1. - y)) + self.mean
+        return torch.round(x * inverse_bin_width) / inverse_bin_width
 
     def sample(self, batchSize):
         """

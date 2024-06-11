@@ -73,8 +73,8 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, train
                 for translation in sampled_translations:
                     shift_left, shift_down, shift_right, shift_up = translation
                     translated_img = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up).to(device)
-                    s += (loss - model.forward(translated_img))**2
-                loss += loss + lam * s**2
+                    s += torch.abs(loss - model.forward(translated_img)) # L1-Regularization
+                loss += loss + lam * s
 
             optimizer.zero_grad()
             loss.backward(retain_graph=True)

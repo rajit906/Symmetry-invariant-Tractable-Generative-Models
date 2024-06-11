@@ -35,14 +35,31 @@ def log_min_exp(a, b, epsilon=1e-8):
 
     return y
 
-def log_integer_probability(x, mean, logscale):
+
+def log_discretized_logistic(x, mean, logscale, inverse_bin_width = 1.):
     scale = torch.exp(logscale)
 
     logp = log_min_exp(
-        F.logsigmoid((x + 0.5 - mean) / scale),
-        F.logsigmoid((x - 0.5 - mean) / scale))
+        F.logsigmoid((x + 0.5 / inverse_bin_width - mean) / scale),
+        F.logsigmoid((x - 0.5 / inverse_bin_width - mean) / scale))
 
     return logp
+
+
+def log_mixture_discretized_logistic(x, mean, logscale, pi, inverse_bin_width = 1.):
+    scale = torch.exp(logscale)
+
+    x = x.view(x.size(0), x.size(1), x.size(2), x.size(3), 1)
+
+    p = torch.sigmoid((x + 0.5 / inverse_bin_width - mean) / scale) \
+        - torch.sigmoid((x - 0.5 / inverse_bin_width - mean) / scale)
+
+    p = torch.sum(p * pi, dim=-1)
+
+    logp = torch.log(p + 1e-8)
+
+    return logp
+
 
 def samples_real(name, test_loader, D):
     # REAL-------
