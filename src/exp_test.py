@@ -16,7 +16,7 @@ from neural_networks import nnetts
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-batch_size = 112
+batch_size = 1000
 train_data, val_data, test_data = load_data('mnist')
 # Create data loaders
 training_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
@@ -29,12 +29,13 @@ if not(os.path.exists(result_dir)):
 name = 'idf-4'
 
 D = 784   # input dimension
-M = 2 * D  # the number of neurons in scale (s) and translation (t) nets
+M = D  # the number of neurons in scale (s) and translation (t) nets
 lr = 1e-3 # learning rate
-num_epochs = 200 # max. number of epochs
+num_epochs = 2 # max. number of epochs
 max_patience = max(min(num_epochs//5,5),20) # an early stopping is used, if training doesn't improve for longer than 20 epochs, it is stopped
 num_flows = 4 # The number of invertible transformations
 lam = 0. # Regularization Hyperparameter
+n_mixtures = 3 # Number of latent mixing variables
 
 hyperparameters = {'D': D, 
                    'M': M,
@@ -43,14 +44,15 @@ hyperparameters = {'D': D,
                    'max_patience': max_patience,
                    'num_flows': num_flows,
                    'batch_size': batch_size,
-                   'lambda': lam
+                   'lambda': lam,
+                   'n_mixtures': n_mixtures
                     }
 
 with open(result_dir + '/hyperparameters.yaml', 'w') as file:
     yaml.dump(hyperparameters, file)
 
 netts = nnetts(D, M)
-model = idf.IDF4(netts, num_flows, D=D).to(device)
+model = idf.IDF4(netts, num_flows, n_mixtures = n_mixtures, D=D).to(device)
 #print(summary(model, torch.zeros(1, 64), show_input=False, show_hierarchical=False))
 optimizer = torch.optim.Adamax([p for p in model.parameters() if p.requires_grad == True], lr=lr)
 # Training procedure

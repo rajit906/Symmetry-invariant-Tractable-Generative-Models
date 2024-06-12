@@ -1,8 +1,9 @@
 D: 784
-M: 1568
-batch_size: 112
+M: 784
+batch_size: 50
 lambda: 0.0
 lr: 0.001
-max_patience: 20
-num_epochs: 200
+max_patience: 5
+n_mixtures: 5
+num_epochs: 100
 num_flows: 4

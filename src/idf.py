@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from util import RoundStraightThrough, log_discretized_logistic, log_mixture_discretized_logistic
 
 
@@ -22,7 +23,7 @@ class IDF4(nn.Module):
         logscale (torch.nn.Parameter): The log-scale parameter of the prior distribution.
         D (int): The dimensionality of the input data.
     """
-    def __init__(self, netts, num_flows, D=2):
+    def __init__(self, netts, num_flows, n_mixtures = 1, D = 2):
         """
         Initializes the IDF4 model.
 
@@ -32,21 +33,25 @@ class IDF4(nn.Module):
             D (int): The dimensionality of the input data (default is 2).
         """
         super(IDF4, self).__init__()
+        self.round = RoundStraightThrough.apply
+        self.num_flows = num_flows
+        self.D = D
+        self.n_mixtures = n_mixtures
+        if self.n_mixtures == 1:
+            self.mean = nn.Parameter(torch.zeros(1, D))
+            self.logscale = nn.Parameter(torch.ones(1, D))
+            self.is_mixture = False
+        elif self.n_mixtures > 1:
+            self.means = nn.Parameter(torch.zeros(1, D, self.n_mixtures))
+            self.logscales = nn.Parameter(torch.ones(1, D, self.n_mixtures))
+            self.pi_logit = nn.Parameter(torch.ones(1, D, self.n_mixtures) / self.n_mixtures)
+            self.is_mixture = True
+
         
         self.t_a = torch.nn.ModuleList([netts[0]() for _ in range(num_flows)])
         self.t_b = torch.nn.ModuleList([netts[1]() for _ in range(num_flows)])
         self.t_c = torch.nn.ModuleList([netts[2]() for _ in range(num_flows)])
         self.t_d = torch.nn.ModuleList([netts[3]() for _ in range(num_flows)])
-        
-        self.num_flows = num_flows
-
-        self.round = RoundStraightThrough.apply
-        
-        self.mean = nn.Parameter(torch.zeros(1, D))
-        self.logscale = nn.Parameter(torch.ones(1, D))
-        self.pi = nn.Parameter(torch.ones(1, 3) / 3.) # We are setting latent number of variables in mixture model to be 3.
-
-        self.D = D
 
     def coupling(self, x, index, forward=True):
         """
@@ -88,7 +93,7 @@ class IDF4(nn.Module):
         """
         return x.flip(1)
     
-    def log_prior(self, x, mixture = False):
+    def log_prior(self, x):
         """
         Computes the log-prior probability of the given tensor.
 
@@ -98,8 +103,10 @@ class IDF4(nn.Module):
         Returns:
             torch.Tensor: The log-prior probability of the input tensor.
         """
-        if mixture:
-            log_p = log_mixture_discretized_logistic(x, self.mean, self.logscale, self.pi)
+        if self.is_mixture:
+            self.pi = F.softmax(self.pi_logit, dim=-1)
+            x = x.unsqueeze(-1).repeat(1, 1, self.n_mixtures)
+            log_p = log_mixture_discretized_logistic(x, self.means, self.logscales, self.pi)
         else:
             log_p = log_discretized_logistic(x, self.mean, self.logscale)
         return log_p.sum(1)
@@ -155,7 +162,7 @@ class IDF4(nn.Module):
         else:
             return -self.log_prior(z).mean()
         
-    def prior_sample(self, batchSize, D=2, mixture = False, inverse_bin_width = 1.):
+    def prior_sample(self, batchSize, D=2, inverse_bin_width = 1.):
         """
         Samples from the prior (Logistic, Discretized Logistic, Discretized Logistic Mixture) distribution.
 
@@ -166,11 +173,24 @@ class IDF4(nn.Module):
         Returns:
             torch.Tensor: The sampled tensor from the prior distribution.
         """
-        if mixture:
-            pass
+        if self.is_mixture:
+            _, _, n_mixtures = tuple(map(int, self.pi.size()))
+            pi = self.pi.view(D, n_mixtures).clone()
+            sampled_pi = torch.multinomial(pi, num_samples=1).view(-1)
+
+            # Select mixture params
+            means = self.means.view(D, n_mixtures)
+            means = means[torch.arange(D), sampled_pi].view(D)
+            logscales = self.logscales.view(D, n_mixtures).clone()
+            logscales = logscales[torch.arange(D), sampled_pi].view(D)
+
+            y = torch.rand_like(means)
+            x = (torch.exp(logscales) * torch.log(y / (1 - y)) + means).view(1, D)
+
         else:
             y = torch.rand(batchSize, self.D)
             x = torch.exp(self.logscale) * torch.log(y / (1. - y)) + self.mean
+            
         return torch.round(x * inverse_bin_width) / inverse_bin_width
 
     def sample(self, batchSize):
