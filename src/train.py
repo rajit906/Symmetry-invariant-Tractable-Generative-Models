@@ -33,7 +33,7 @@ def evaluation(test_loader, name=None, model_best=None, epoch=None):
 
     return loss
 
-def training(name, result_dir, max_patience, num_epochs, model, optimizer, training_loader, val_loader, device, lam = 0.):
+def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler, training_loader, val_loader, device, lam = 0.):
     """
     Trains a given model using the specified training and validation data loaders.
 
@@ -79,6 +79,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, train
             optimizer.zero_grad()
             loss.backward(retain_graph=True)
             optimizer.step()
+        scheduler.step()
         # Validation
         loss_val = evaluation(val_loader, model_best=model, epoch=e)
         print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
