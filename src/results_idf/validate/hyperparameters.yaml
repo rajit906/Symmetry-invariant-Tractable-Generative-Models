@@ -1,0 +1,9 @@
+D: 64
+M: 256
+batch_size: 64
+lambda: 0.0
+lr: 0.005
+max_patience: 20
+n_mixtures: 5
+num_epochs: 1000
+num_flows: 4

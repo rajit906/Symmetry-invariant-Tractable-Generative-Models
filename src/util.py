@@ -81,8 +81,7 @@ def samples_generated(name, data_loader, D, extra_name=''):
 
     num_x = 4
     num_y = 4
-    x = model_best.sample(num_x * num_y)
-    x = x.detach().numpy()
+    x = model_best.sample(num_x * num_y).detach().numpy()
 
     fig, ax = plt.subplots(num_x, num_y)
     for i, ax in enumerate(ax.flatten()):
