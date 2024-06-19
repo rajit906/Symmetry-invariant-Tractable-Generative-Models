@@ -3,6 +3,25 @@ from sklearn.datasets import load_digits
 from torch.utils.data import Dataset, random_split
 from torchvision import datasets, transforms
 import numpy as np
+"""Extra generative modeling benchmark datasets not provided by PyTorch."""
+
+import os
+
+import numpy as np
+import PIL
+import torch
+from sklearn import datasets as sk_datasets
+from torch import distributions
+from torch.nn import functional as F
+from torch.utils import data
+from torchvision import datasets, transforms
+from torchvision.datasets import utils, vision
+
+def _dynamically_binarize(x):
+    return distributions.Bernoulli(probs=x).sample()
+
+def _flatten(x):
+    return x.view(-1)
 
 class Digits(Dataset):
     """Scikit-Learn Digits dataset."""
@@ -47,7 +66,7 @@ class MNISTWithoutLabels(datasets.MNIST):
         img, _ = super().__getitem__(index)  # Ignore the label
         return img
 
-def load_data(name):
+def load_data(name, binarize = False):
     """
     Loads the specified dataset and returns the training, validation, and test datasets.
 
@@ -57,21 +76,23 @@ def load_data(name):
     Returns:
         tuple: A tuple containing the training dataset, validation dataset, and test dataset.
     """
+    transform = [transforms.ToTensor(), _flatten]
+
     if name == 'sklearn':
         train_data = Digits(mode='train')
         val_data = Digits(mode='val')
         test_data = Digits(mode='test')
+
     if name == 'mnist':
-
-        transform = transforms.Compose([
-        transforms.ToTensor(),
-        #transforms.Normalize((0.5,), (0.5,)),
-        transforms.Lambda(lambda x: x.view(-1))])
-
+        if binarize:
+            transform.append(_dynamically_binarize)
+        transform = transforms.Compose(transform)
         train_data = MNISTWithoutLabels(root='./data', train=True, download=True, transform=transform)
         test_data = MNISTWithoutLabels(root='./data', train=False, download=True, transform=transform)
-        train_size = int(0.9 * len(train_data))
-        val_size = len(train_data) - train_size
-        train_data, val_data = random_split(train_data, [train_size, val_size])
+
+    train_size = int(0.9 * len(train_data))
+    val_size = len(train_data) - train_size
+    train_data, val_data = random_split(train_data, [train_size, val_size])
+
         
     return (train_data, val_data, test_data)

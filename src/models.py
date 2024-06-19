@@ -1,7 +1,241 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
+import abc
+from torch import distributions, nn
 from util import RoundStraightThrough, log_discretized_logistic, log_mixture_discretized_logistic
+
+"""Base classes for models."""
+
+
+
+def _default_sample_fn(logits):
+    return distributions.Bernoulli(logits=logits).sample()
+
+
+def auto_reshape(fn):
+    """Decorator which flattens image inputs and reshapes them before returning.
+
+    This is used to enable non-convolutional models to transparently work on images.
+    """
+
+    def wrapped_fn(self, x, *args, **kwargs):
+        original_shape = x.shape
+        x = x.view(original_shape[0], -1)
+        y = fn(self, x, *args, **kwargs)
+        return y.view(original_shape)
+
+    return wrapped_fn
+
+
+class GenerativeModel(abc.ABC, nn.Module):
+    """Base class inherited by all generative models in pytorch-generative.
+
+    Provides:
+        * An abstract `sample()` method which is implemented by subclasses that support
+          generating samples.
+        * Variables `self._c, self._h, self._w` which store the shape of the (first)
+          image Tensor the model was trained with. Note that `forward()` must have been
+          called at least once and the input must be an image for these variables to be
+          available.
+        * A `device` property which returns the device of the model's parameters.
+    """
+
+    def __call__(self, x, *args, **kwargs):
+        """Saves input tensor attributes so they can be accessed during sampling."""
+        if getattr(self, "_c", None) is None and x.dim() == 4:
+            _, c, h, w = x.shape
+            self._create_shape_buffers(c, h, w)
+        return super().__call__(x, *args, **kwargs)
+
+    def load_state_dict(self, state_dict, strict=True):
+        """Registers dynamic buffers before loading the model state."""
+        if "_c" in state_dict and not getattr(self, "_c", None):
+            c, h, w = state_dict["_c"], state_dict["_h"], state_dict["_w"]
+            self._create_shape_buffers(c, h, w)
+        super().load_state_dict(state_dict, strict)
+
+    def _create_shape_buffers(self, channels, height, width):
+        channels = channels if torch.is_tensor(channels) else torch.tensor(channels)
+        height = height if torch.is_tensor(height) else torch.tensor(height)
+        width = width if torch.is_tensor(width) else torch.tensor(width)
+        self.register_buffer("_c", channels)
+        self.register_buffer("_h", height)
+        self.register_buffer("_w", width)
+
+    @property
+    def device(self):
+        return next(self.parameters()).device
+
+    @abc.abstractmethod
+    def sample(self, n_samples):
+        ...
+
+
+class AutoregressiveModel(GenerativeModel):
+    """The base class for Autoregressive generative models."""
+
+    def __init__(self, sample_fn=None):
+        """Initializes a new AutoregressiveModel instance.
+
+        Args:
+            sample_fn: A fn(logits)->sample which takes sufficient statistics of a
+                distribution as input and returns a sample from that distribution.
+                Defaults to the Bernoulli distribution.
+        """
+        super().__init__()
+        self._sample_fn = sample_fn or _default_sample_fn
+
+    def _get_conditioned_on(self, n_samples, conditioned_on):
+        assert (
+            n_samples is not None or conditioned_on is not None
+        ), 'Must provided one, and only one, of "n_samples" or "conditioned_on"'
+        if conditioned_on is None:
+            shape = (n_samples, self._c, self._h, self._w)
+            conditioned_on = (torch.ones(shape) * -1).to(self.device)
+        else:
+            conditioned_on = conditioned_on.clone()
+        return conditioned_on
+
+    @torch.no_grad()
+    def sample(self, n_samples=None, conditioned_on=None):
+        """Generates new samples from the model.
+
+        Args:
+            n_samples: The number of samples to generate. Should only be provided when
+                `conditioned_on is None`.
+            conditioned_on: A batch of partial samples to condition the generation on.
+                Only dimensions with values < 0 are sampled while dimensions with
+                values >= 0 are left unchanged. If 'None', an unconditional sample is
+                generated.
+        """
+        conditioned_on = self._get_conditioned_on(n_samples, conditioned_on)
+        n, c, h, w = conditioned_on.shape
+        for row in range(h):
+            for col in range(w):
+                out = self.forward(conditioned_on)[:, :, row, col]
+                out = self._sample_fn(out).view(n, c)
+                conditioned_on[:, :, row, col] = torch.where(
+                    conditioned_on[:, :, row, col] < 0,
+                    out,
+                    conditioned_on[:, :, row, col],
+                )
+        return conditioned_on
+
+class MaskedLinear(nn.Linear):
+    """A Linear layer with masks that turn off some of the layer's weights."""
+
+    def __init__(self, in_features, out_features, bias=True):
+        super().__init__(in_features, out_features, bias)
+        self.register_buffer("mask", torch.ones((out_features, in_features)))
+
+    def set_mask(self, mask):
+        self.mask.data.copy_(mask)
+
+    def forward(self, x):
+        self.weight.data *= self.mask
+        return super().forward(x)
+
+
+class MADE(AutoregressiveModel):
+    """The Masked Autoencoder Distribution Estimator (MADE) model."""
+
+    def __init__(self, input_dim, hidden_dims=None, n_masks=1, sample_fn=None):
+        """Initializes a new MADE instance.
+
+        Args:
+            input_dim: The dimensionality of the input.
+            hidden_dims: A list containing the number of units for each hidden layer.
+            n_masks: The total number of distinct masks to use during training/eval.
+            sample_fn: See the base class.
+        """
+        super().__init__(sample_fn)
+        self._input_dim = input_dim
+        self._dims = [self._input_dim] + (hidden_dims or []) + [self._input_dim]
+        self._n_masks = n_masks
+        self._mask_seed = 0
+
+        layers = []
+        for i in range(len(self._dims) - 1):
+            in_dim, out_dim = self._dims[i], self._dims[i + 1]
+            layers.append(MaskedLinear(in_dim, out_dim))
+            layers.append(nn.ReLU())
+        self._net = nn.Sequential(*layers[:-1])
+
+    def _sample_masks(self):
+        """Samples a new set of autoregressive masks.
+
+        Only 'self._n_masks' distinct sets of masks are sampled after which the mask
+        sets are rotated through in the order in which they were sampled. In
+        principle, it's possible to generate the masks once and cache them. However,
+        this can lead to memory issues for large 'self._n_masks' or models many
+        parameters. Finally, sampling the masks is not that computationally
+        expensive.
+
+        Returns:
+            A tuple of (masks, ordering). Ordering refers to the ordering of the outputs
+            since MADE is order agnostic.
+        """
+        rng = np.random.RandomState(seed=self._mask_seed % self._n_masks)
+        self._mask_seed += 1
+
+        # Sample connectivity patterns.
+        conn = [rng.permutation(self._input_dim)]
+        for i, dim in enumerate(self._dims[1:-1]):
+            # NOTE(eugenhotaj): The dimensions in the paper are 1-indexed whereas
+            # arrays in Python are 0-indexed. Implementation adjusted accordingly.
+            low = 0 if i == 0 else np.min(conn[i - 1])
+            high = self._input_dim - 1
+            conn.append(rng.randint(low, high, size=dim))
+        conn.append(np.copy(conn[0]))
+
+        # Create masks.
+        masks = [
+            conn[i - 1][None, :] <= conn[i][:, None] for i in range(1, len(conn) - 1)
+        ]
+        masks.append(conn[-2][None, :] < conn[-1][:, None])
+
+        return [torch.from_numpy(mask.astype(np.uint8)) for mask in masks], conn[-1]
+
+    def _forward(self, x, masks):
+        layers = [
+            layer for layer in self._net.modules() if isinstance(layer, MaskedLinear)
+        ]
+        for layer, mask in zip(layers, masks):
+            layer.set_mask(mask)
+        return self._net(x)
+
+    @auto_reshape
+    def forward(self, x):
+        """Computes the forward pass.
+
+        Args:
+            x: Either a tensor of vectors with shape (n, input_dim) or images with shape
+                (n, 1, h, w) where h * w = input_dim.
+        Returns:
+            The result of the forward pass.
+        """
+
+        masks, _ = self._sample_masks()
+        return self._forward(x, masks)
+
+    @torch.no_grad()
+    def sample(self, n_samples, conditioned_on=None):
+        """See the base class."""
+        conditioned_on = self._get_conditioned_on(n_samples, conditioned_on)
+        return self._sample(conditioned_on)
+
+    @auto_reshape
+    def _sample(self, x):
+        masks, ordering = self._sample_masks()
+        ordering = np.argsort(ordering)
+        for dim in ordering:
+            out = self._forward(x, masks)[:, dim]
+            out = self._sample_fn(out)
+            x[:, dim] = torch.where(x[:, dim] < 0, out, x[:, dim])
+        return x
+
 
 
 class IDF4(nn.Module):

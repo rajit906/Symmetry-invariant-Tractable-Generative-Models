@@ -7,6 +7,8 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 
+### Integer Discrete Flows
+
 class RoundStraightThrough(torch.autograd.Function):
     def __init__(self):
         super().__init__()
@@ -54,6 +56,13 @@ def log_mixture_discretized_logistic(x, mean, logscale, pi, inverse_bin_width = 
     logp = torch.log(p + 1e-8)
 
     return logp
+
+### Masked Autoencoder for Density Estimation
+
+
+
+
+### General Purpose
 
 
 def samples_real(name, test_loader, D):

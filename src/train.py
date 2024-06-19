@@ -3,7 +3,7 @@ import numpy as np
 from util import translate_img_batch, translation_configurations
 import random
 
-def evaluation(test_loader, name=None, model_best=None, epoch=None):
+def evaluation(test_loader, loss_fn, name=None, model_best=None, epoch=None):
     """
     Evaluates the model on the test dataset and computes the negative log-likelihood loss.
 
@@ -23,7 +23,8 @@ def evaluation(test_loader, name=None, model_best=None, epoch=None):
     loss = 0.
     N = 0.
     for indx_batch, test_batch in enumerate(test_loader):
-        loss_t = model_best.forward(test_batch, reduction='sum')
+        preds = model_best.forward(test_batch)
+        loss_t = loss_fn(test_batch, test_batch, preds)
         loss = loss + loss_t.item()
         N = N + test_batch.shape[0]
     loss = loss / N
@@ -33,7 +34,8 @@ def evaluation(test_loader, name=None, model_best=None, epoch=None):
 
     return loss
 
-def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler, training_loader, val_loader, device, lam = 0.):
+def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler, loss_fn, 
+             training_loader, val_loader, device, lam = 0.):
     """
     Trains a given model using the specified training and validation data loaders.
 
@@ -66,7 +68,8 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         model.train()
         for indx_batch, batch in enumerate(training_loader):
             batch = batch.to(device)
-            loss = model.forward(batch)
+            preds = model.forward(batch)
+            loss = loss_fn(batch, batch, preds)
             if lam > 0:
                 sampled_translations = random.sample(translation_repository, 3)
                 s = 0
@@ -81,7 +84,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
             optimizer.step()
         scheduler.step()
         # Validation
-        loss_val = evaluation(val_loader, model_best=model, epoch=e)
+        loss_val = evaluation(val_loader, loss_fn, model_best=model, epoch=e)
         print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
         nll_val.append(loss_val)  # save for plotting
 
