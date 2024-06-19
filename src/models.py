@@ -92,7 +92,7 @@ class AutoregressiveModel(GenerativeModel):
             n_samples is not None or conditioned_on is not None
         ), 'Must provided one, and only one, of "n_samples" or "conditioned_on"'
         if conditioned_on is None:
-            shape = (n_samples, self._c, self._h, self._w)
+            shape = (n_samples, 1, 28, 28) #self._c, self._h, self._w)
             conditioned_on = (torch.ones(shape) * -1).to(self.device)
         else:
             conditioned_on = conditioned_on.clone()

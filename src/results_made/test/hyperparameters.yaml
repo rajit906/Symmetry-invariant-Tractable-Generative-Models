@@ -3,5 +3,6 @@ M: 8000
 batch_size: 64
 lambda: 0.0
 lr: 0.001
-max_patience: 20
+max_patience: 8
+n_masks: 1
 num_epochs: 85
