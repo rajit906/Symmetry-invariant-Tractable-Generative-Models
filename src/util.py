@@ -59,7 +59,11 @@ def log_mixture_discretized_logistic(x, mean, logscale, pi, inverse_bin_width = 
 
 ### Masked Autoencoder for Density Estimation
 
-
+def cross_entropy_loss_fn(x, preds):
+    batch_size = x.shape[0]
+    x, preds = x.view((batch_size, -1)), preds.view((batch_size, -1))
+    loss = F.binary_cross_entropy_with_logits(preds, x, reduction="none")
+    return loss.sum(dim=1).mean()
 
 
 ### General Purpose
