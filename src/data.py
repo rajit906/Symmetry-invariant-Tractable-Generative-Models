@@ -14,14 +14,13 @@ from sklearn import datasets as sk_datasets
 from torch import distributions
 from torch.nn import functional as F
 from torch.utils import data
-from torchvision import datasets, transforms
-from torchvision.datasets import utils, vision
 
 def _dynamically_binarize(x):
     return distributions.Bernoulli(probs=x).sample()
 
 def _flatten(x):
     return x.view(-1)
+
 
 class Digits(Dataset):
     """Scikit-Learn Digits dataset."""
@@ -66,7 +65,7 @@ class MNISTWithoutLabels(datasets.MNIST):
         img, _ = super().__getitem__(index)  # Ignore the label
         return img
 
-def load_data(name, binarize = False):
+def load_data(name, binarize = False, eval = False, val = True):
     """
     Loads the specified dataset and returns the training, validation, and test datasets.
 
@@ -86,13 +85,20 @@ def load_data(name, binarize = False):
     if name == 'mnist':
         if binarize:
             transform.append(_dynamically_binarize)
+        if eval:
+            transform.remove(_flatten)
+            transform.append(transforms.Resize((299, 299)))
+            transform.append(transforms.Grayscale(num_output_channels=3))
+            transform.append(transforms.Normalize((0.5,), (0.5,)))
         transform = transforms.Compose(transform)
         train_data = MNISTWithoutLabels(root='./data', train=True, download=True, transform=transform)
         test_data = MNISTWithoutLabels(root='./data', train=False, download=True, transform=transform)
 
-    train_size = int(0.9 * len(train_data))
-    val_size = len(train_data) - train_size
-    train_data, val_data = random_split(train_data, [train_size, val_size])
+    val_data = None
+    if val:
+        train_size = int(0.9 * len(train_data))
+        val_size = len(train_data) - train_size
+        train_data, val_data = random_split(train_data, [train_size, val_size])
 
         
     return (train_data, val_data, test_data)

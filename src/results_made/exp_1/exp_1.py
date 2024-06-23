@@ -35,5 +35,5 @@ for translation in translations:
         lls.append(ll)
     lls_translation[translation] = lls
 
-with open(result_dir + '/translation_lls.pkl', 'wb') as file:
+with open(result_dir + '/translation_lls_1.pkl', 'wb') as file:
     dump(lls_translation, file)

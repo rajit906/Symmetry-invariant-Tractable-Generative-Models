@@ -1,0 +1,429 @@
+2024-06-22 21:56:36,184 INFO    StreamThr :82047 [internal.py:wandb_internal():85] W&B internal server running at pid: 82047, started at: 2024-06-22 21:56:36.182337
+2024-06-22 21:56:36,186 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status
+2024-06-22 21:56:36,187 INFO    WriterThread:82047 [datastore.py:open_for_write():87] open: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/run-1.wandb
+2024-06-22 21:56:36,188 DEBUG   SenderThread:82047 [sender.py:send():378] send: header
+2024-06-22 21:56:36,188 DEBUG   SenderThread:82047 [sender.py:send():378] send: run
+2024-06-22 21:56:36,527 INFO    SenderThread:82047 [dir_watcher.py:__init__():211] watching files in: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files
+2024-06-22 21:56:36,527 INFO    SenderThread:82047 [sender.py:_start_run_threads():1123] run started: 1 with start time 1719089795.288092
+2024-06-22 21:56:36,541 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: check_version
+2024-06-22 21:56:36,541 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: check_version
+2024-06-22 21:56:36,731 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: run_start
+2024-06-22 21:56:36,733 DEBUG   HandlerThread:82047 [system_info.py:__init__():26] System info init
+2024-06-22 21:56:36,733 DEBUG   HandlerThread:82047 [system_info.py:__init__():41] System info init done
+2024-06-22 21:56:36,733 INFO    HandlerThread:82047 [system_monitor.py:start():194] Starting system monitor
+2024-06-22 21:56:36,733 INFO    SystemMonitor:82047 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-06-22 21:56:36,733 INFO    HandlerThread:82047 [system_monitor.py:probe():214] Collecting system info
+2024-06-22 21:56:36,734 INFO    SystemMonitor:82047 [interfaces.py:start():188] Started cpu monitoring
+2024-06-22 21:56:36,734 INFO    SystemMonitor:82047 [interfaces.py:start():188] Started disk monitoring
+2024-06-22 21:56:36,739 INFO    SystemMonitor:82047 [interfaces.py:start():188] Started gpuapple monitoring
+2024-06-22 21:56:36,743 INFO    SystemMonitor:82047 [interfaces.py:start():188] Started memory monitoring
+2024-06-22 21:56:36,744 INFO    SystemMonitor:82047 [interfaces.py:start():188] Started network monitoring
+2024-06-22 21:56:36,843 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:36,906 ERROR   HandlerThread:82047 [gpu_apple.py:probe():176] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 164, in probe
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:36,907 DEBUG   HandlerThread:82047 [system_info.py:probe():150] Probing system
+2024-06-22 21:56:36,907 DEBUG   HandlerThread:82047 [system_info.py:_probe_git():135] Probing git
+2024-06-22 21:56:36,924 DEBUG   HandlerThread:82047 [system_info.py:_probe_git():143] Probing git done
+2024-06-22 21:56:36,924 DEBUG   HandlerThread:82047 [system_info.py:probe():198] Probing system done
+2024-06-22 21:56:36,924 DEBUG   HandlerThread:82047 [system_monitor.py:probe():223] {'os': 'macOS-13.3-arm64-arm-64bit', 'python': '3.11.4', 'heartbeatAt': '2024-06-22T20:56:36.907151', 'startedAt': '2024-06-22T20:56:31.505606', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '<python with no main file>', 'codePathLocal': None, 'git': {'remote': 'https://github.com/rajit906/Symmetry-invariant-Tractable-Generative-Models.git', 'commit': '505a0a8f13d13577224aaf89ffcf4d4e6b995236'}, 'email': None, 'root': '/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models', 'host': 'Rajits-MacBook-Air.local', 'username': 'rajit906', 'executable': '/usr/local/bin/python3', 'cpu_count': 8, 'cpu_count_logical': 8, 'disk': {'/': {'total': 228.27386474609375, 'used': 11.354015350341797}}, 'gpuapple': {'type': 'arm', 'vendor': 'Apple'}, 'memory': {'total': 8.0}}
+2024-06-22 21:56:36,924 INFO    HandlerThread:82047 [system_monitor.py:probe():224] Finished collecting system info
+2024-06-22 21:56:36,924 INFO    HandlerThread:82047 [system_monitor.py:probe():227] Publishing system info
+2024-06-22 21:56:36,924 INFO    HandlerThread:82047 [system_monitor.py:probe():229] Finished publishing system info
+2024-06-22 21:56:36,925 DEBUG   SenderThread:82047 [sender.py:send():378] send: files
+2024-06-22 21:56:36,925 INFO    SenderThread:82047 [sender.py:_save_file():1389] saving file wandb-metadata.json with policy now
+2024-06-22 21:56:37,014 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: python_packages
+2024-06-22 21:56:37,014 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: python_packages
+2024-06-22 21:56:37,017 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: stop_status
+2024-06-22 21:56:37,017 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: stop_status
+2024-06-22 21:56:37,306 DEBUG   SenderThread:82047 [sender.py:send():378] send: telemetry
+2024-06-22 21:56:37,464 INFO    wandb-upload_0:82047 [upload_job.py:push():130] Uploaded file /var/folders/sx/y6c6vjtn04719m5bcb52hk3r0000gn/T/tmp7xhk_xcgwandb/4iuu71p4-wandb-metadata.json
+2024-06-22 21:56:37,534 INFO    Thread-24 :82047 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/wandb-metadata.json
+2024-06-22 21:56:37,534 INFO    Thread-24 :82047 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/requirements.txt
+2024-06-22 21:56:39,176 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:41,326 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:56:41,474 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:43,615 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:45,730 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:46,340 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:56:47,895 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:50,059 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:51,359 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:56:52,029 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: stop_status
+2024-06-22 21:56:52,035 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: stop_status
+2024-06-22 21:56:52,358 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:54,536 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:56,658 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:56:57,286 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:56:58,780 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:00,923 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:02,307 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:03,038 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:05,156 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:07,020 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: stop_status
+2024-06-22 21:57:07,020 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: stop_status
+2024-06-22 21:57:07,290 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:08,209 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:08,672 INFO    Thread-24 :82047 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/config.yaml
+2024-06-22 21:57:09,405 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:11,531 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:13,397 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:13,658 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:15,783 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:17,898 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:18,422 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:20,162 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:22,023 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: stop_status
+2024-06-22 21:57:22,023 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: stop_status
+2024-06-22 21:57:22,263 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:24,237 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:24,374 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:26,464 ERROR   gpuapple  :82047 [gpu_apple.py:sample():110] GPU stats error: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/system/assets/gpu_apple.py", line 64, in sample
+    subprocess.check_output(command, universal_newlines=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/bin/apple_gpu_stats', '--json']' died with <Signals.SIGTRAP: 5>.
+2024-06-22 21:57:27,922 DEBUG   SenderThread:82047 [sender.py:send():378] send: telemetry
+2024-06-22 21:57:27,922 DEBUG   SenderThread:82047 [sender.py:send():378] send: exit
+2024-06-22 21:57:27,922 INFO    SenderThread:82047 [sender.py:send_exit():585] handling exit code: 0
+2024-06-22 21:57:27,922 INFO    SenderThread:82047 [sender.py:send_exit():587] handling runtime: 51
+2024-06-22 21:57:27,925 INFO    SenderThread:82047 [sender.py:_save_file():1389] saving file wandb-summary.json with policy end
+2024-06-22 21:57:27,926 INFO    SenderThread:82047 [sender.py:send_exit():593] send defer
+2024-06-22 21:57:27,931 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,932 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 0
+2024-06-22 21:57:27,935 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,935 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 0
+2024-06-22 21:57:27,935 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 1
+2024-06-22 21:57:27,938 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,938 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 1
+2024-06-22 21:57:27,942 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,942 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 1
+2024-06-22 21:57:27,942 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 2
+2024-06-22 21:57:27,946 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,946 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 2
+2024-06-22 21:57:27,947 INFO    HandlerThread:82047 [system_monitor.py:finish():203] Stopping system monitor
+2024-06-22 21:57:27,947 DEBUG   SystemMonitor:82047 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-06-22 21:57:27,947 DEBUG   SystemMonitor:82047 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-06-22 21:57:27,947 DEBUG   SystemMonitor:82047 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-06-22 21:57:27,950 INFO    HandlerThread:82047 [interfaces.py:finish():200] Joined cpu monitor
+2024-06-22 21:57:27,952 INFO    HandlerThread:82047 [interfaces.py:finish():200] Joined disk monitor
+2024-06-22 21:57:27,952 INFO    HandlerThread:82047 [interfaces.py:finish():200] Joined gpuapple monitor
+2024-06-22 21:57:27,952 INFO    HandlerThread:82047 [interfaces.py:finish():200] Joined memory monitor
+2024-06-22 21:57:27,952 INFO    HandlerThread:82047 [interfaces.py:finish():200] Joined network monitor
+2024-06-22 21:57:27,957 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,957 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 2
+2024-06-22 21:57:27,957 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 3
+2024-06-22 21:57:27,957 DEBUG   SenderThread:82047 [sender.py:send():378] send: telemetry
+2024-06-22 21:57:27,957 DEBUG   SenderThread:82047 [sender.py:send():378] send: stats
+2024-06-22 21:57:27,959 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,959 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 3
+2024-06-22 21:57:27,960 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,961 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 3
+2024-06-22 21:57:27,961 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 4
+2024-06-22 21:57:27,962 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,962 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 4
+2024-06-22 21:57:27,968 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,968 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 4
+2024-06-22 21:57:27,968 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 5
+2024-06-22 21:57:27,970 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,970 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 5
+2024-06-22 21:57:27,971 DEBUG   SenderThread:82047 [sender.py:send():378] send: summary
+2024-06-22 21:57:27,971 INFO    SenderThread:82047 [sender.py:_save_file():1389] saving file wandb-summary.json with policy end
+2024-06-22 21:57:27,972 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,972 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 5
+2024-06-22 21:57:27,972 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 6
+2024-06-22 21:57:27,973 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:27,973 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 6
+2024-06-22 21:57:27,976 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:27,977 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 6
+2024-06-22 21:57:27,981 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:28,137 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 7
+2024-06-22 21:57:28,137 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:28,138 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 7
+2024-06-22 21:57:28,138 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:28,138 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 7
+2024-06-22 21:57:28,775 INFO    Thread-24 :82047 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/config.yaml
+2024-06-22 21:57:28,776 INFO    Thread-24 :82047 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/wandb-summary.json
+2024-06-22 21:57:28,776 INFO    Thread-24 :82047 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/output.log
+2024-06-22 21:57:28,925 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: poll_exit
+2024-06-22 21:57:29,900 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 8
+2024-06-22 21:57:29,900 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: poll_exit
+2024-06-22 21:57:29,900 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:29,900 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 8
+2024-06-22 21:57:29,901 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:29,901 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 8
+2024-06-22 21:57:29,901 INFO    SenderThread:82047 [job_builder.py:build():432] Attempting to build job artifact
+2024-06-22 21:57:29,901 INFO    SenderThread:82047 [job_builder.py:_get_source_type():565] is repo sourced job
+2024-06-22 21:57:29,901 INFO    SenderThread:82047 [job_builder.py:_get_program_relpath():583] run is notebook based run
+2024-06-22 21:57:29,901 WARNING SenderThread:82047 [job_builder.py:_log_if_verbose():267] Source type is set to 'repo' but some required information is missing from the environment. A job will not be created from this run. See https://docs.wandb.ai/guides/launch/create-job
+2024-06-22 21:57:29,901 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 9
+2024-06-22 21:57:29,902 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:29,902 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 9
+2024-06-22 21:57:29,902 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:29,902 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 9
+2024-06-22 21:57:29,902 INFO    SenderThread:82047 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-06-22 21:57:29,930 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: poll_exit
+2024-06-22 21:57:30,785 INFO    SenderThread:82047 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/output.log
+2024-06-22 21:57:30,786 INFO    SenderThread:82047 [dir_watcher.py:finish():388] scan: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files
+2024-06-22 21:57:30,786 INFO    SenderThread:82047 [dir_watcher.py:finish():402] scan save: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/requirements.txt requirements.txt
+2024-06-22 21:57:30,786 INFO    SenderThread:82047 [dir_watcher.py:finish():402] scan save: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/output.log output.log
+2024-06-22 21:57:30,787 INFO    SenderThread:82047 [dir_watcher.py:finish():402] scan save: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/config.yaml config.yaml
+2024-06-22 21:57:30,788 INFO    SenderThread:82047 [dir_watcher.py:finish():402] scan save: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/wandb-summary.json wandb-summary.json
+2024-06-22 21:57:30,789 INFO    SenderThread:82047 [dir_watcher.py:finish():402] scan save: /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/wandb-metadata.json wandb-metadata.json
+2024-06-22 21:57:30,789 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 10
+2024-06-22 21:57:30,789 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: poll_exit
+2024-06-22 21:57:30,789 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:30,789 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 10
+2024-06-22 21:57:30,789 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:30,789 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 10
+2024-06-22 21:57:30,789 INFO    SenderThread:82047 [file_pusher.py:finish():169] shutting down file pusher
+2024-06-22 21:57:31,141 INFO    wandb-upload_1:82047 [upload_job.py:push():130] Uploaded file /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/output.log
+2024-06-22 21:57:31,203 INFO    wandb-upload_0:82047 [upload_job.py:push():130] Uploaded file /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/requirements.txt
+2024-06-22 21:57:31,236 INFO    wandb-upload_3:82047 [upload_job.py:push():130] Uploaded file /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/wandb-summary.json
+2024-06-22 21:57:31,244 INFO    wandb-upload_2:82047 [upload_job.py:push():130] Uploaded file /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_215631-1/files/config.yaml
+2024-06-22 21:57:31,449 INFO    Thread-23 (_thread_body):82047 [sender.py:transition_state():613] send defer: 11
+2024-06-22 21:57:31,449 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:31,449 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 11
+2024-06-22 21:57:31,449 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:31,449 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 11
+2024-06-22 21:57:31,449 INFO    SenderThread:82047 [file_pusher.py:join():175] waiting for file pusher
+2024-06-22 21:57:31,450 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 12
+2024-06-22 21:57:31,451 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:31,451 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 12
+2024-06-22 21:57:31,451 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:31,451 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 12
+2024-06-22 21:57:31,451 INFO    SenderThread:82047 [file_stream.py:finish():601] file stream finish called
+2024-06-22 21:57:31,582 INFO    SenderThread:82047 [file_stream.py:finish():605] file stream finish is done
+2024-06-22 21:57:31,582 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 13
+2024-06-22 21:57:31,583 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:31,583 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 13
+2024-06-22 21:57:31,583 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:31,583 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 13
+2024-06-22 21:57:31,583 INFO    SenderThread:82047 [sender.py:transition_state():613] send defer: 14
+2024-06-22 21:57:31,583 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: defer
+2024-06-22 21:57:31,583 INFO    HandlerThread:82047 [handler.py:handle_request_defer():184] handle defer: 14
+2024-06-22 21:57:31,583 DEBUG   SenderThread:82047 [sender.py:send():378] send: final
+2024-06-22 21:57:31,583 DEBUG   SenderThread:82047 [sender.py:send():378] send: footer
+2024-06-22 21:57:31,583 DEBUG   SenderThread:82047 [sender.py:send_request():405] send_request: defer
+2024-06-22 21:57:31,583 INFO    SenderThread:82047 [sender.py:send_request_defer():609] handle sender defer: 14
+2024-06-22 21:57:35,597 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report
+2024-06-22 21:57:40,618 DEBUG   HandlerThread:82047 [handler.py:handle_request():158] handle_request: status_report

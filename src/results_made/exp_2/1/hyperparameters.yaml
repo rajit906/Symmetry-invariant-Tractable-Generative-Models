@@ -1,0 +1,8 @@
+D: 784
+M: 8000
+batch_size: 64
+lambda: 0.1
+lr: 0.001
+max_patience: 8
+n_masks: 1
+num_epochs: 21

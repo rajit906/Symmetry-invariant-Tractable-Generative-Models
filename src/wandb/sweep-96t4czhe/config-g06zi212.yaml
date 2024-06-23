@@ -1,0 +1,18 @@
+wandb_version: 1
+
+D:
+  value: 784
+M:
+  value: 500
+batch_size:
+  value: 32
+lam:
+  value: 1
+lr:
+  value: 0.009392026795759336
+max_patience:
+  value: 10
+n_masks:
+  value: 1
+num_epochs:
+  value: 1

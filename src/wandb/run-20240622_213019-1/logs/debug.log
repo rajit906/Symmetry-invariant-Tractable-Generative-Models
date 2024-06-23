@@ -1,0 +1,67 @@
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Current SDK version is 0.17.0
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Configure stats pid to 68105
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/.config/wandb/settings
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/settings
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_init.py:_log_setup():520] Logging user logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_213019-1/logs/debug.log
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_init.py:_log_setup():521] Logging internal logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_213019-1/logs/debug-internal.log
+2024-06-22 21:30:19,178 INFO    MainThread:68105 [wandb_init.py:_jupyter_setup():466] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x1200d7610>
+2024-06-22 21:30:19,179 INFO    MainThread:68105 [wandb_init.py:init():560] calling init triggers
+2024-06-22 21:30:19,179 INFO    MainThread:68105 [wandb_init.py:init():567] wandb.init called with sweep_config: {}
+config: {'D': 784, 'M': 8000, 'lr': 0.001, 'n_masks': 1, 'num_epochs': 3, 'max_patience': 5, 'batch_size': 64, 'lambda': 0.1}
+2024-06-22 21:30:19,179 INFO    MainThread:68105 [wandb_init.py:init():610] starting backend
+2024-06-22 21:30:19,179 INFO    MainThread:68105 [wandb_init.py:init():614] setting up manager
+2024-06-22 21:30:19,183 INFO    MainThread:68105 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2024-06-22 21:30:19,199 INFO    MainThread:68105 [wandb_init.py:init():622] backend started and connected
+2024-06-22 21:30:19,218 INFO    MainThread:68105 [wandb_run.py:_label_probe_notebook():1328] probe notebook
+2024-06-22 21:30:19,218 INFO    MainThread:68105 [wandb_run.py:_label_probe_notebook():1338] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2024-06-22 21:30:19,218 INFO    MainThread:68105 [wandb_init.py:init():711] updated telemetry
+2024-06-22 21:30:19,245 INFO    MainThread:68105 [wandb_init.py:init():744] communicating run to backend with 90.0 second timeout
+2024-06-22 21:30:19,560 ERROR   MainThread:68105 [wandb_init.py:init():770] encountered error: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 403: Forbidden)
+2024-06-22 21:30:19,560 ERROR   MainThread:68105 [wandb_init.py:init():1174] error in wandb.init()
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_init.py", line 1164, in init
+    return wi.init()
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_init.py", line 776, in init
+    raise error
+wandb.errors.CommError: It appears that you do not have permission to access the requested resource. Please reach out to the project owner to grant you access. If you have the correct permissions, verify that there are no issues with your networking setup.(Error 403: Forbidden)
+2024-06-22 21:38:18,956 INFO    MainThread:68105 [wandb_settings.py:_apply_login():1895] Applying login settings: {}
+2024-06-22 21:38:18,968 INFO    MainThread:68105 [wandb_settings.py:_apply_login():1895] Applying login settings: {}
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Current SDK version is 0.17.0
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Configure stats pid to 68105
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/.config/wandb/settings
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/settings
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_init.py:_log_setup():520] Logging user logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_213818-1/logs/debug.log
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_init.py:_log_setup():521] Logging internal logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240622_213818-1/logs/debug-internal.log
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_init.py:init():560] calling init triggers
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_init.py:init():567] wandb.init called with sweep_config: {}
+config: {'D': 784, 'M': 8000, 'lr': 0.001, 'n_masks': 1, 'num_epochs': 3, 'max_patience': 5, 'batch_size': 64, 'lambda': 0.1}
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_init.py:init():610] starting backend
+2024-06-22 21:38:18,974 INFO    MainThread:68105 [wandb_init.py:init():614] setting up manager
+2024-06-22 21:38:18,977 INFO    MainThread:68105 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2024-06-22 21:38:18,978 INFO    MainThread:68105 [wandb_init.py:init():622] backend started and connected
+2024-06-22 21:38:18,996 INFO    MainThread:68105 [wandb_run.py:_label_probe_notebook():1328] probe notebook
+2024-06-22 21:38:18,996 INFO    MainThread:68105 [wandb_run.py:_label_probe_notebook():1338] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2024-06-22 21:38:18,996 INFO    MainThread:68105 [wandb_init.py:init():711] updated telemetry
+2024-06-22 21:38:19,089 INFO    MainThread:68105 [wandb_init.py:init():744] communicating run to backend with 90.0 second timeout
+2024-06-22 21:38:19,414 WARNING MsgRouterThr:68105 [router.py:message_loop():77] message_loop has been closed
+2024-06-22 21:39:49,535 ERROR   MainThread:68105 [wandb_init.py:init():770] encountered error: Run initialization has timed out after 90.0 sec. 
+Please refer to the documentation for additional information: https://docs.wandb.ai/guides/track/tracking-faq#initstarterror-error-communicating-with-wandb-process-
+2024-06-22 21:39:49,537 ERROR   MainThread:68105 [wandb_init.py:init():1174] error in wandb.init()
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_init.py", line 1164, in init
+    return wi.init()
+           ^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_init.py", line 776, in init
+    raise error
+wandb.errors.CommError: Run initialization has timed out after 90.0 sec. 
+Please refer to the documentation for additional information: https://docs.wandb.ai/guides/track/tracking-faq#initstarterror-error-communicating-with-wandb-process-
+2024-06-22 21:41:35,157 INFO    MainThread:68105 [wandb_settings.py:_apply_login():1895] Applying login settings: {}

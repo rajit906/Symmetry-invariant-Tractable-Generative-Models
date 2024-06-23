@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from util import translate_img_batch, translation_configurations
 import random
+import wandb
 
 def evaluation(test_loader, loss_fn, name=None, model_best=None, epoch=None):
     """
@@ -22,12 +23,12 @@ def evaluation(test_loader, loss_fn, name=None, model_best=None, epoch=None):
     model_best.eval()
     loss = 0.
     N = 0.
-    for indx_batch, test_batch in enumerate(test_loader):
+    for _, test_batch in enumerate(test_loader):
         preds = model_best.forward(test_batch)
-        loss_t = loss_fn(test_batch, test_batch, preds)
+        loss_t = loss_fn(test_batch, preds)
         loss = loss + loss_t.item()
         N = N + test_batch.shape[0]
-    loss = loss / N
+    loss = (loss / N)
 
     if epoch is None:
         print(f'FINAL LOSS: nll={loss}')
@@ -35,7 +36,7 @@ def evaluation(test_loader, loss_fn, name=None, model_best=None, epoch=None):
     return loss
 
 def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler, loss_fn, 
-             training_loader, val_loader, device, lam = 0.):
+             training_loader, val_loader, device, lam = 0., batch_size = None):
     """
     Trains a given model using the specified training and validation data loaders.
 
@@ -66,17 +67,18 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
     for e in range(num_epochs):
         # TRAINING
         model.train()
-        for indx_batch, batch in enumerate(training_loader):
+        for _, batch in enumerate(training_loader):
             batch = batch.to(device)
             preds = model.forward(batch)
-            loss = loss_fn(batch, batch, preds)
+            loss = loss_fn(batch, preds)
             if lam > 0:
-                sampled_translations = random.sample(translation_repository, 3)
+                sampled_translations = random.sample(translation_repository, 4)
                 s = 0
                 for translation in sampled_translations:
                     shift_left, shift_down, shift_right, shift_up = translation
-                    translated_img = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up).to(device)
-                    s += torch.abs(loss - model.forward(translated_img)) # L1-Regularization
+                    translated_batch = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up).to(device)
+                    translated_preds = model.forward(translated_batch)
+                    s += torch.abs(loss - loss_fn(translated_batch, translated_preds)) # L1-Regularization
                 loss += loss + lam * s
 
             optimizer.zero_grad()
@@ -84,9 +86,17 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
             optimizer.step()
         scheduler.step()
         # Validation
-        loss_val = evaluation(val_loader, loss_fn, model_best=model, epoch=e)
+        loss_val = evaluation(val_loader, loss_fn, model_best=model, epoch=e) * batch_size
         print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
         nll_val.append(loss_val)  # save for plotting
+
+        wandb.log(
+            {
+                "epoch": e,
+                "train_loss": loss,
+                "val_loss": loss_val,
+            }
+        )
 
         if e == 0:
             print('saved!')
