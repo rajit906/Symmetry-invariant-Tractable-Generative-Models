@@ -86,8 +86,8 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
             optimizer.step()
         scheduler.step()
         # Validation
-        loss_val = evaluation(val_loader, loss_fn, model_best=model, epoch=e) * batch_size
-        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
+        loss_val = evaluation(val_loader, loss_fn, model_best=model, epoch=e)
+        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val * batch_size}')
         nll_val.append(loss_val)  # save for plotting
 
         wandb.log(
