@@ -19,7 +19,7 @@ def _dynamically_binarize(x):
     return distributions.Bernoulli(probs=x).sample()
 
 def _flatten(x):
-    return x.view(-1)
+    return x.view(-1).long()
 
 
 class Digits(Dataset):
