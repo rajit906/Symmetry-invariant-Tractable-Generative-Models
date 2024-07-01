@@ -1,0 +1,6 @@
+[submodule "src/Cirkit"]
+	path = src/Cirkit
+	url = https://github.com/april-tools/cirkit.git
+[submodule "src/src/Cirkit"]
+	path = src/src/Cirkit
+	url = https://github.com/april-tools/cirkit.git
