@@ -1,0 +1,313 @@
+2024-07-01 15:47:33,467 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Current SDK version is 0.17.0
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Configure stats pid to 3518
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/.config/wandb/settings
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/settings
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'notebook_name': 'hyperparameter_optimization.ipynb', 'project': 'pc_hyperparameter_optimization', 'entity': 'rajpal906', 'root_dir': '/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src', 'run_id': 'hu6avx3y', 'sweep_param_path': '/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/sweep-spvvkf25/config-hu6avx3y.yaml', 'sweep_id': 'spvvkf25'}
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_init.py:_log_setup():520] Logging user logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240701_154733-hu6avx3y/logs/debug.log
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_init.py:_log_setup():521] Logging internal logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240701_154733-hu6avx3y/logs/debug-internal.log
+2024-07-01 15:47:33,468 INFO    Thread-94 (_run_job):3518 [wandb_init.py:_jupyter_setup():466] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x297eab250>
+2024-07-01 15:47:33,469 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():560] calling init triggers
+2024-07-01 15:47:33,469 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():567] wandb.init called with sweep_config: {'batch_size': 256, 'input_dim': 784, 'lam': 0.5, 'lr': 0.01, 'max_patience': 30, 'num_epochs': 1, 'num_input_units': 8, 'num_sum_units': 8}
+config: {}
+2024-07-01 15:47:33,469 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():610] starting backend
+2024-07-01 15:47:33,469 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():614] setting up manager
+2024-07-01 15:47:33,476 INFO    Thread-94 (_run_job):3518 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2024-07-01 15:47:33,476 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():622] backend started and connected
+2024-07-01 15:47:33,496 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_config_callback():1376] config_cb None None {'batch_size': 256, 'input_dim': 784, 'lam': 0.5, 'lr': 0.01, 'max_patience': 30, 'num_epochs': 1, 'num_input_units': 8, 'num_sum_units': 8}
+2024-07-01 15:47:33,503 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_label_probe_notebook():1328] probe notebook
+2024-07-01 15:47:33,504 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():711] updated telemetry
+2024-07-01 15:47:33,532 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():744] communicating run to backend with 90.0 second timeout
+2024-07-01 15:47:33,915 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_on_init():2396] communicating current version
+2024-07-01 15:47:34,038 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_on_init():2405] got version response upgrade_message: "wandb version 0.17.3 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-07-01 15:47:34,038 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():795] starting run threads in backend
+2024-07-01 15:47:34,347 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_console_start():2374] atexit reg
+2024-07-01 15:47:34,347 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_redirect():2229] redirect: wrap_raw
+2024-07-01 15:47:34,347 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_redirect():2294] Wrapping output streams.
+2024-07-01 15:47:34,347 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_redirect():2319] Redirects installed.
+2024-07-01 15:47:34,347 INFO    Thread-94 (_run_job):3518 [wandb_init.py:init():838] run started, returning control to user process
+2024-07-01 15:50:04,114 INFO    MainThread:3518 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2024-07-01 15:50:04,115 INFO    MainThread:3518 [wandb_init.py:_pause_backend():431] pausing backend
+2024-07-01 15:50:04,134 INFO    MainThread:3518 [wandb_init.py:_resume_backend():436] resuming backend
+2024-07-01 15:50:04,140 INFO    MainThread:3518 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2024-07-01 15:50:04,140 INFO    MainThread:3518 [wandb_init.py:_pause_backend():431] pausing backend
+2024-07-01 15:50:04,149 INFO    MainThread:3518 [wandb_init.py:_resume_backend():436] resuming backend
+2024-07-01 15:50:04,156 INFO    MainThread:3518 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2024-07-01 15:50:04,157 INFO    MainThread:3518 [wandb_init.py:_pause_backend():431] pausing backend
+2024-07-01 15:52:28,891 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_finish():2103] finishing run rajpal906/pc_hyperparameter_optimization/hu6avx3y
+2024-07-01 15:52:28,891 INFO    Thread-94 (_run_job):3518 [jupyter.py:save_history():445] not saving jupyter history
+2024-07-01 15:52:28,891 INFO    Thread-94 (_run_job):3518 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2024-07-01 15:52:28,892 INFO    Thread-94 (_run_job):3518 [wandb_init.py:_jupyter_teardown():448] cleaning up jupyter logic
+2024-07-01 15:52:28,892 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_atexit_cleanup():2343] got exitcode: 1
+2024-07-01 15:52:28,892 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_restore():2326] restore
+2024-07-01 15:52:28,892 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_restore():2332] restore done
+2024-07-01 15:52:30,908 ERROR   Thread-94 (_run_job):3518 [ipython.py:update():120] Socket operation on non-socket
+Traceback (most recent call last):
+  File "/var/folders/sx/y6c6vjtn04719m5bcb52hk3r0000gn/T/ipykernel_3518/3484832056.py", line 97, in hyperparameter_sweep
+    _, _, model_best = training(name=name, result_dir=result_dir, max_patience=config.max_patience, num_epochs=config.num_epochs,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/train.py", line 106, in training
+    loss_val, bpd = evaluation(val_loader, device, model_best=model, epoch=e)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/train.py", line 31, in evaluation
+    for i, batch in enumerate(test_loader):
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 439, in __iter__
+    return self._get_iterator()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 387, in _get_iterator
+    return _MultiProcessingDataLoaderIter(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 1040, in __init__
+    w.start()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
+                  ^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/context.py", line 224, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/context.py", line 288, in _Popen
+    return Popen(process_obj)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/popen_fork.py", line 16, in __init__
+    util._flush_std_streams()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/util.py", line 435, in _flush_std_streams
+    sys.stdout.flush()
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 559, in flush
+    self.pub_thread.schedule(self._flush)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/agents/pyagent.py", line 307, in _run_job
+    self._function()
+  File "/var/folders/sx/y6c6vjtn04719m5bcb52hk3r0000gn/T/ipykernel_3518/3484832056.py", line 72, in hyperparameter_sweep
+    with wandb.init(config=config):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 3516, in __exit__
+    traceback.print_exception(exc_type, exc_val, exc_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/traceback.py", line 125, in print_exception
+    te.print(file=file, chain=chain)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/traceback.py", line 982, in print
+    print(line, file=file, end="")
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/redirect.py", line 645, in write
+    self._old_write(data)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 648, in write
+    self._schedule_flush()
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 545, in _schedule_flush
+    self.pub_thread.schedule(_schedule_in_thread)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/ipython.py", line 113, in update
+    self._progress.value = value
+    ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/traitlets/traitlets.py", line 732, in __set__
+    self.set(obj, value)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/traitlets/traitlets.py", line 721, in set
+    obj._notify_trait(self.name, old_value, new_value)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/traitlets/traitlets.py", line 1505, in _notify_trait
+    self.notify_change(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ipywidgets/widgets/widget.py", line 700, in notify_change
+    self.send_state(key=name)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ipywidgets/widgets/widget.py", line 586, in send_state
+    self._send(msg, buffers=buffers)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ipywidgets/widgets/widget.py", line 825, in _send
+    self.comm.send(data=msg, buffers=buffers)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/comm/base_comm.py", line 113, in send
+    self.publish_msg(
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/comm/comm.py", line 36, in publish_msg
+    self.kernel.session.send(
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/jupyter_client/session.py", line 861, in send
+    stream.send_multipart(to_send, copy=copy)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 330, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 260, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+2024-07-01 15:52:30,930 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_restore():2326] restore
+2024-07-01 15:52:30,931 INFO    Thread-94 (_run_job):3518 [wandb_run.py:_restore():2332] restore done
+2024-07-01 15:52:31,933 ERROR   Thread-94 (_run_job):3518 [wandb_run.py:_atexit_cleanup():2364] Problem finishing run
+Traceback (most recent call last):
+  File "/var/folders/sx/y6c6vjtn04719m5bcb52hk3r0000gn/T/ipykernel_3518/3484832056.py", line 97, in hyperparameter_sweep
+    _, _, model_best = training(name=name, result_dir=result_dir, max_patience=config.max_patience, num_epochs=config.num_epochs,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/train.py", line 106, in training
+    loss_val, bpd = evaluation(val_loader, device, model_best=model, epoch=e)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/train.py", line 31, in evaluation
+    for i, batch in enumerate(test_loader):
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 439, in __iter__
+    return self._get_iterator()
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 387, in _get_iterator
+    return _MultiProcessingDataLoaderIter(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/torch/utils/data/dataloader.py", line 1040, in __init__
+    w.start()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/process.py", line 121, in start
+    self._popen = self._Popen(self)
+                  ^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/context.py", line 224, in _Popen
+    return _default_context.get_context().Process._Popen(process_obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/context.py", line 288, in _Popen
+    return Popen(process_obj)
+           ^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/popen_spawn_posix.py", line 32, in __init__
+    super().__init__(process_obj)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/popen_fork.py", line 16, in __init__
+    util._flush_std_streams()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/multiprocessing/util.py", line 435, in _flush_std_streams
+    sys.stdout.flush()
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 559, in flush
+    self.pub_thread.schedule(self._flush)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/agents/pyagent.py", line 307, in _run_job
+    self._function()
+  File "/var/folders/sx/y6c6vjtn04719m5bcb52hk3r0000gn/T/ipykernel_3518/3484832056.py", line 72, in hyperparameter_sweep
+    with wandb.init(config=config):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 3516, in __exit__
+    traceback.print_exception(exc_type, exc_val, exc_tb)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/traceback.py", line 125, in print_exception
+    te.print(file=file, chain=chain)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/traceback.py", line 982, in print
+    print(line, file=file, end="")
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/redirect.py", line 645, in write
+    self._old_write(data)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 648, in write
+    self._schedule_flush()
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 545, in _schedule_flush
+    self.pub_thread.schedule(_schedule_in_thread)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/ipython.py", line 113, in update
+    self._progress.value = value
+    ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/traitlets/traitlets.py", line 732, in __set__
+    self.set(obj, value)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/traitlets/traitlets.py", line 721, in set
+    obj._notify_trait(self.name, old_value, new_value)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/traitlets/traitlets.py", line 1505, in _notify_trait
+    self.notify_change(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ipywidgets/widgets/widget.py", line 700, in notify_change
+    self.send_state(key=name)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ipywidgets/widgets/widget.py", line 586, in send_state
+    self._send(msg, buffers=buffers)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/ipywidgets/widgets/widget.py", line 825, in _send
+    self.comm.send(data=msg, buffers=buffers)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/comm/base_comm.py", line 113, in send
+    self.publish_msg(
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/comm/comm.py", line 36, in publish_msg
+    self.kernel.session.send(
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/jupyter_client/session.py", line 861, in send
+    stream.send_multipart(to_send, copy=copy)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 330, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 260, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 2352, in _atexit_cleanup
+    self._on_finish()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 2608, in _on_finish
+    _ = exit_handle.wait(timeout=-1, on_progress=self._on_progress_exit)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/mailbox.py", line 303, in wait
+    on_progress(progress_handle)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 2587, in _on_progress_exit
+    self._footer_file_pusher_status_info(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 3807, in _footer_file_pusher_status_info
+    Run._footer_single_run_file_pusher_status_info(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/wandb_run.py", line 3858, in _footer_single_run_file_pusher_status_info
+    printer.progress_update(line, percent_done)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/printer.py", line 288, in progress_update
+    self._progress.update(percent_done, text)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/ipython.py", line 121, in update
+    wandb.termwarn(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/errors/term.py", line 53, in termwarn
+    _log(
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/errors/term.py", line 103, in _log
+    click.echo(line, file=sys.stderr, nl=newline)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/click/utils.py", line 319, in echo
+    file.flush()
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 559, in flush
+    self.pub_thread.schedule(self._flush)
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/ipykernel/iostream.py", line 251, in schedule
+    self._event_pipe.send(b"")
+  File "/Users/rajit906/Library/Python/3.11/lib/python/site-packages/zmq/sugar/socket.py", line 696, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/socket.pyx", line 742, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 783, in zmq.backend.cython.socket.Socket.send
+  File "zmq/backend/cython/socket.pyx", line 138, in zmq.backend.cython.socket._check_closed
+zmq.error.ZMQError: Socket operation on non-socket
+2024-07-01 19:54:56,459 INFO    MainThread:3518 [pyagent.py:run():323] Starting sweep agent: entity=None, project=None, count=None

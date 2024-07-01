@@ -1,0 +1,7 @@
+Average test LL: 3203.703
+Bits per dimension: 5.895365560774133
+Epoch: 0, train nll=3219.151611328125, val nll=3203.7031171875
+saved!
+Average test LL: 3203.878
+Bits per dimension: 5.895686550788579
+FINAL LOSS: nll=3203.877551953125

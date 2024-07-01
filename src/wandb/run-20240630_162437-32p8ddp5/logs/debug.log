@@ -1,0 +1,114 @@
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Current SDK version is 0.17.0
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Configure stats pid to 3518
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/.config/wandb/settings
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Loading settings from /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/settings
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'notebook_name': 'hyperparameter_optimization.ipynb', 'project': 'pc_hyperparameter_optimization', 'entity': 'rajpal906', 'root_dir': '/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src', 'run_id': '32p8ddp5', 'sweep_param_path': '/Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/sweep-spvvkf25/config-32p8ddp5.yaml', 'sweep_id': 'spvvkf25'}
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_init.py:_log_setup():520] Logging user logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240630_162437-32p8ddp5/logs/debug.log
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_init.py:_log_setup():521] Logging internal logs to /Users/rajit906/Downloads/Dissertation/Symmetry-invariant-Tractable-Generative-Models/src/wandb/run-20240630_162437-32p8ddp5/logs/debug-internal.log
+2024-06-30 16:24:37,145 INFO    Thread-43 (_run_job):3518 [wandb_init.py:_jupyter_setup():466] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x297ff2ed0>
+2024-06-30 16:24:37,146 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():560] calling init triggers
+2024-06-30 16:24:37,146 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():567] wandb.init called with sweep_config: {'batch_size': 64, 'input_dim': 784, 'lam': 0.5, 'lr': 0.001, 'max_patience': 30, 'num_epochs': 1, 'num_input_units': 8, 'num_sum_units': 8}
+config: {}
+2024-06-30 16:24:37,146 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():610] starting backend
+2024-06-30 16:24:37,146 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():614] setting up manager
+2024-06-30 16:24:37,148 INFO    Thread-43 (_run_job):3518 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2024-06-30 16:24:37,149 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():622] backend started and connected
+2024-06-30 16:24:37,156 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_config_callback():1376] config_cb None None {'batch_size': 64, 'input_dim': 784, 'lam': 0.5, 'lr': 0.001, 'max_patience': 30, 'num_epochs': 1, 'num_input_units': 8, 'num_sum_units': 8}
+2024-06-30 16:24:37,160 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_label_probe_notebook():1328] probe notebook
+2024-06-30 16:24:37,160 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():711] updated telemetry
+2024-06-30 16:24:37,176 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():744] communicating run to backend with 90.0 second timeout
+2024-06-30 16:24:37,590 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_on_init():2396] communicating current version
+2024-06-30 16:24:37,944 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_on_init():2405] got version response upgrade_message: "wandb version 0.17.3 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-06-30 16:24:37,945 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():795] starting run threads in backend
+2024-06-30 16:24:38,214 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_console_start():2374] atexit reg
+2024-06-30 16:24:38,214 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_redirect():2229] redirect: wrap_raw
+2024-06-30 16:24:38,214 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_redirect():2294] Wrapping output streams.
+2024-06-30 16:24:38,214 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_redirect():2319] Redirects installed.
+2024-06-30 16:24:38,214 INFO    Thread-43 (_run_job):3518 [wandb_init.py:init():838] run started, returning control to user process
+2024-06-30 21:17:48,712 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_finish():2103] finishing run rajpal906/pc_hyperparameter_optimization/32p8ddp5
+2024-06-30 21:17:48,713 INFO    Thread-43 (_run_job):3518 [jupyter.py:save_history():445] not saving jupyter history
+2024-06-30 21:17:48,713 INFO    Thread-43 (_run_job):3518 [jupyter.py:save_ipynb():373] not saving jupyter notebook
+2024-06-30 21:17:48,713 INFO    Thread-43 (_run_job):3518 [wandb_init.py:_jupyter_teardown():448] cleaning up jupyter logic
+2024-06-30 21:17:48,713 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_atexit_cleanup():2343] got exitcode: 0
+2024-06-30 21:17:48,713 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_restore():2326] restore
+2024-06-30 21:17:48,713 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_restore():2332] restore done
+2024-06-30 22:20:01,650 INFO    Thread-27 (_heartbeat):3518 [retry.py:__call__():172] Retry attempt failed:
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/util/connection.py", line 72, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/socket.py", line 962, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 714, in urlopen
+    httplib_response = self._make_request(
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 403, in _make_request
+    self._validate_conn(conn)
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1053, in _validate_conn
+    conn.connect()
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 363, in connect
+    self.sock = conn = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x28e9b2790>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/connectionpool.py", line 798, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/urllib3/util/retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x28e9b2790>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 340, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/wandb/sdk/lib/gql_request.py", line 58, in execute
+    request = self.session.post(self.url, **post_args)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 637, in post
+    return self.request("POST", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/requests/adapters.py", line 519, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x28e9b2790>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known'))
+2024-06-30 22:25:16,622 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_footer_history_summary_info():3994] rendering history
+2024-06-30 22:25:16,622 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_footer_history_summary_info():4026] rendering summary
+2024-06-30 22:25:16,638 INFO    Thread-43 (_run_job):3518 [wandb_run.py:_footer_sync_info():3953] logging synced files

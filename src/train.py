@@ -23,25 +23,27 @@ def evaluation(test_loader, device, name=None, model_best=None, epoch=None):
         pf_circuit.eval()
 
     if model_best is None:
-        model_best = torch.load(name + '.model')
+        model_best = (torch.load('models/circuit.pt'), torch.load('models/pf_circuit.pt'))
+        circuit, pf_circuit = model_best
 
     test_lls = 0.0
     log_pf = pf_circuit()
-
+    len_data = 0
     for i, batch in enumerate(test_loader):
         batch = batch.to(device).unsqueeze(dim=1)   # Add a channel dimension
         log_output = circuit(batch)                 # Compute the log output of the circuit
         lls = log_output - log_pf                   # Compute the log-likelihood
         test_lls += lls.sum().item()
-
-    average_nll = -test_lls / ((i+1) * batch.shape[0])
-    bpd = average_nll / (batch.shape[2] * np.log(2.0))
-    print(f"Average test LL: {average_nll:.3f}") #TODO: log to wandb
-    print(f"Bits per dimension: {bpd}") #TODO: log to wandb
+        len_data += batch.shape[0]
+    average_nll = -test_lls / (len_data)
+    num_variables = batch.shape[2] #TODO: Keep track if this changes
+    bpd = average_nll / (num_variables * np.log(2.0))
+    print(f"Average test LL: {average_nll:.3f}")
+    print(f"Bits per dimension: {bpd}")
     if epoch is None:
         print(f'FINAL LOSS: nll={average_nll}')
 
-    return average_nll
+    return (average_nll, bpd)
 
 def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler,
              training_loader, val_loader, device, lam = 0., batch_size = None):
@@ -67,6 +69,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         np.ndarray: Array of negative log-likelihoods (validation losses) of the model.
     """
     nll_val = []
+    bpd_val = []
     best_nll = 1000.
     patience = 0
     translation_repository = translation_configurations()
@@ -94,34 +97,37 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
                     translated_lls = log_translated_output - log_translated_pf
                     translated_loss = -torch.mean(translated_lls)
                     s += torch.abs(loss - translated_loss)
-                loss += loss + lam * s
-            optimizer.zero_grad()
+                loss += lam * s
             loss.backward(retain_graph=True)
             optimizer.step()
+            optimizer.zero_grad()
         scheduler.step()
         # Validation
         model = (circuit, pf_circuit)
-        loss_val = evaluation(val_loader, device, model_best=model, epoch=e)
+        loss_val, bpd = evaluation(val_loader, device, model_best=model, epoch=e)
         print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
         nll_val.append(loss_val)  # save for plotting
+        bpd_val.append(bpd)
 
-        #wandb.log(
-            #{
-                #"epoch": e,
-                #"train_loss": loss,
-                #"val_loss": loss_val,
-            #}
-        #)
+        wandb.log(
+            {
+                "epoch": e,
+                "train_loss": loss,
+                "val_loss": loss_val,
+                "bpd_val": bpd
+            }
+        )
 
         if e == 0:
             print('saved!')
-            #TODO: Figure out how to save model parameters.
-            #torch.save(circuit, result_dir + '/' + name + '.pt')
+            #torch.save(circuit, result_dir + '/' + 'circuit' + '.pt')
+            #torch.save(pf_circuit, result_dir + '/' + 'pf_circuit' + '.pt')
             best_nll = loss_val
         else:
             if loss_val < best_nll:
                 print('saved!')
-                #torch.save(circuit, result_dir + '/' + name + '.pt')
+                #torch.save(circuit, result_dir + '/' + 'circuit' + '.pt')
+                #torch.save(pf_circuit, result_dir + '/' + 'pf_circuit' + '.pt')
                 best_nll = loss_val
                 patience = 0
             else:
@@ -131,5 +137,6 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
             break
 
     nll_val = np.asarray(nll_val)
+    bpd_val = np.asarray(bpd_val)
 
-    return nll_val
+    return nll_val, bpd_val, model
