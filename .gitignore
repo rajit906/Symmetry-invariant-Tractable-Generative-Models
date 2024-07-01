@@ -1,3 +1,4 @@
 **/**/**/*.model
-Cirkit/
+#Cirkit/
 **/**/**/*.pt
+wandb/
