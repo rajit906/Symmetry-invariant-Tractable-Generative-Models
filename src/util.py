@@ -67,10 +67,10 @@ def cross_entropy_loss_fn(x, preds):
 
 ### Probabilistic Circuits
 
-from Cirkit.cirkit.symbolic.parameters import LogSoftmaxParameter, ExpParameter, Parameter
-from Cirkit.cirkit.symbolic.layers import CategoricalLayer, DenseLayer, HadamardLayer, MixingLayer
-from Cirkit.cirkit.symbolic.initializers import NormalInitializer
-from Cirkit.cirkit.utils.scope import Scope
+from Cirkits.cirkit.symbolic.parameters import LogSoftmaxParameter, ExpParameter, Parameter
+from Cirkits.cirkit.symbolic.layers import CategoricalLayer, DenseLayer, HadamardLayer, MixingLayer
+from Cirkits.cirkit.symbolic.initializers import NormalInitializer
+from Cirkits.cirkit.utils.scope import Scope
 
 def categorical_layer_factory(
     scope: Scope,
