@@ -106,7 +106,7 @@ def training(name, result_dir, model_type, max_patience, num_epochs, model, opti
                 log_output = circuit(batch)
                 log_pf = pf_circuit()   
                 lls = log_output - log_pf
-                loss += -torch.mean(lls)
+                loss = -torch.mean(lls)
             elif model_type == 'MADE':
                 preds = model.forward(batch)
                 loss = loss_fn(batch, preds)
