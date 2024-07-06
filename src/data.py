@@ -7,7 +7,9 @@ import numpy as np
 
 import os
 import random
+random.seed(42)
 import numpy as np
+np.random.seed(42)
 import PIL
 import torch
 from sklearn import datasets as sk_datasets

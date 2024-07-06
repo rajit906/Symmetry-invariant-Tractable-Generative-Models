@@ -22,8 +22,8 @@ from Cirkits.cirkit.pipeline import PipelineContext
 
 
 def run(args):
-    #random.seed(42)
-    #np.random.seed(42) #Remove this if you are doing several runs
+    random.seed(42)
+    np.random.seed(42) #Remove this if you are doing several runs
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model_type = args.model_type
     num_epochs = args.epochs
@@ -56,9 +56,9 @@ def run(args):
         ### Define Model
         model = models.MADE(input_dim=input_dim, hidden_dims=[M], n_masks=n_masks).to(device)
         optimizer = torch.optim.Adam([p for p in model.parameters() if p.requires_grad == True], lr = lr)
-        scheduler = lr_scheduler.StepLR(optimizer, step_size=num_epochs, gamma=0.5)
+        #scheduler = lr_scheduler.StepLR(optimizer, step_size=num_epochs, gamma=0.5)
         nll_val, bpd_val, nll_train, model = training(name=name, result_dir=result_dir, model_type = model_type, max_patience=patience, num_epochs=num_epochs, 
-                           model=model, loss_fn=cross_entropy_loss_fn, optimizer=optimizer, scheduler=scheduler, lam=lam,
+                           model=model, loss_fn=cross_entropy_loss_fn, optimizer=optimizer, lam=lam,
                            training_loader=train_loader, val_loader=val_loader, device=device, batch_size = batch_size)
         torch.save(model, result_dir + '/' + name + '/model_best.model')
 
@@ -99,11 +99,11 @@ def run(args):
         model = (circuit, pf_circuit)
 
         optimizer = torch.optim.SGD([p for p in circuit.parameters() if p.requires_grad == True], lr=lr, momentum=0.95) #torch.optim.Adam([p for p in circuit.parameters() if p.requires_grad == True], lr = lr)
-        scheduler = lr_scheduler.StepLR(optimizer, step_size=num_epochs, gamma=0.5)
+        #scheduler = lr_scheduler.StepLR(optimizer, step_size=num_epochs, gamma=0.5)
 
-        nll_val, bpd_val, nll_train, model = training(name=name, result_dir=result_dir, model_type = model_type, max_patience=patience, num_epochs=num_epochs, 
-                           model=model, loss_fn=cross_entropy_loss_fn, optimizer=optimizer, scheduler=scheduler, lam=lam,
-                           training_loader=train_loader, val_loader=val_loader, device=device, batch_size = batch_size)
+        nll_val, bpd_val, nll_train, model = training(name=name, result_dir=result_dir, model_type = model_type, max_patience=patience, 
+                                                      num_epochs=num_epochs, model=model, loss_fn=cross_entropy_loss_fn, optimizer=optimizer, lam=lam,
+                                                      training_loader=train_loader, val_loader=val_loader, device=device, batch_size = batch_size)
         circuit, pf_circuit = model
         torch.save(circuit, result_dir + '/' + name + '/circuit.pt')
         torch.save(pf_circuit, result_dir + '/' + name + '/pfcircuit.pt')

@@ -59,7 +59,7 @@ def evaluation(test_loader, device, model_type, loss_fn = cross_entropy_loss_fn,
         bpd = bits_per_dim(loss, input_dim)
         return (loss, bpd)
 
-def training(name, result_dir, model_type, max_patience, num_epochs, model, optimizer, scheduler,
+def training(name, result_dir, model_type, max_patience, num_epochs, model, optimizer,
              training_loader, val_loader, device, lam = 0., batch_size = None, loss_fn = None):
     """
     Trains a given model using the specified training and validation data loaders.
@@ -135,7 +135,6 @@ def training(name, result_dir, model_type, max_patience, num_epochs, model, opti
             loss.backward(retain_graph=True)
             optimizer.step()
             optimizer.zero_grad()
-        scheduler.step()
         train_nll = train_nll/N
         # Validation
         if model_type == 'PC':
@@ -144,7 +143,7 @@ def training(name, result_dir, model_type, max_patience, num_epochs, model, opti
         print(f'Epoch: {e}, train nll = {train_nll}, val nll = {loss_val}, val bpd = {val_bpd}')
         nll_val.append(loss_val)  # save for plotting
         bpd_val.append(val_bpd)
-        nll_train.append(train_nll)
+        nll_train.append(train_nll.item())
 
         #wandb.log({"epoch": e,"train_loss": loss,"val_loss": loss_val,"bpd_val": bpd})
 
