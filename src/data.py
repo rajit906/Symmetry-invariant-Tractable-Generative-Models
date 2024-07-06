@@ -6,7 +6,7 @@ import numpy as np
 """Extra generative modeling benchmark datasets not provided by PyTorch."""
 
 import os
-
+import random
 import numpy as np
 import PIL
 import torch
@@ -14,12 +14,25 @@ from sklearn import datasets as sk_datasets
 from torch import distributions
 from torch.nn import functional as F
 from torch.utils import data
+from util import translate_img_batch, translation_configurations
+
+#Try binarize_torch from https://github.com/ajayjain/lmconv/blob/master/utils.py?
 
 def _dynamically_binarize(x):
     return distributions.Bernoulli(probs=x).sample()
 
 def _flatten(x):
-    return (255 * x.view(-1)).long() # Multiply by 255 and .long()
+    return (x.view(-1)).float()
+
+def _flatten_and_multiply(x):
+    return (255 * x.view(-1)).long()
+
+translation_repository = translation_configurations()
+
+def _translate(x):
+    sampled_translation = random.sample(translation_repository, 1)
+    shift_left, shift_down, shift_right, shift_up = sampled_translation[0]
+    return translate_img_batch(x.unsqueeze(dim=0), shift_left, shift_down, shift_right, shift_up)
 
 
 class Digits(Dataset):
@@ -65,7 +78,7 @@ class MNISTWithoutLabels(datasets.MNIST):
         img, _ = super().__getitem__(index)  # Ignore the label
         return img
 
-def load_data(name, binarize = False, eval = False, val = True):
+def load_data(name, binarize = False, eval = False, val = True, augment = False):
     """
     Loads the specified dataset and returns the training, validation, and test datasets.
 
@@ -75,7 +88,7 @@ def load_data(name, binarize = False, eval = False, val = True):
     Returns:
         tuple: A tuple containing the training dataset, validation dataset, and test dataset.
     """
-    transform = [transforms.ToTensor(), _flatten]
+    transform = [transforms.ToTensor()]
 
     if name == 'sklearn':
         train_data = Digits(mode='train')
@@ -85,11 +98,17 @@ def load_data(name, binarize = False, eval = False, val = True):
     if name == 'mnist':
         if binarize:
             transform.append(_dynamically_binarize)
+            transform.append(_flatten)
+        else:
+            transform.append(_flatten_and_multiply)
         if eval:
             transform.remove(_flatten)
             transform.append(transforms.Resize((299, 299)))
             transform.append(transforms.Grayscale(num_output_channels=3))
             transform.append(transforms.Normalize((0.5,), (0.5,)))
+        if augment:
+            transform.append(_translate)
+
         transform = transforms.Compose(transform)
         train_data = MNISTWithoutLabels(root='./data', train=True, download=True, transform=transform)
         test_data = MNISTWithoutLabels(root='./data', train=False, download=True, transform=transform)

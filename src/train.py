@@ -1,10 +1,10 @@
 import torch
 import numpy as np
-from util import translate_img_batch, translation_configurations
+from util import translate_img_batch, translation_configurations, cross_entropy_loss_fn, bits_per_dim
 import random
 import wandb
 
-def evaluation(test_loader, device, name=None, model_best=None, epoch=None):
+def evaluation(test_loader, device, model_type, loss_fn = cross_entropy_loss_fn, name=None, model_best=None, epoch=None):
     """
     Evaluates the model on the test dataset and computes the negative log-likelihood loss.
 
@@ -17,36 +17,50 @@ def evaluation(test_loader, device, name=None, model_best=None, epoch=None):
     Returns:
         float: The computed negative log-likelihood loss on the test dataset.
     """
-    if model_best:
-        circuit, pf_circuit = model_best
-        circuit.eval()
-        pf_circuit.eval()
+    if model_type == 'PC':
+        if model_best:
+            circuit, pf_circuit = model_best
+            circuit.eval()
+            pf_circuit.eval()
 
-    if model_best is None:
-        model_best = (torch.load('models/circuit.pt'), torch.load('models/pf_circuit.pt'))
-        circuit, pf_circuit = model_best
+        if model_best is None:
+            model_best = (torch.load('models/circuit.pt'), torch.load('models/pf_circuit.pt'))
+            circuit, pf_circuit = model_best
 
-    test_lls = 0.0
-    log_pf = pf_circuit()
-    len_data = 0
-    for i, batch in enumerate(test_loader):
-        batch = batch.to(device).unsqueeze(dim=1)   # Add a channel dimension
-        log_output = circuit(batch)                 # Compute the log output of the circuit
-        lls = log_output - log_pf                   # Compute the log-likelihood
-        test_lls += lls.sum().item()
-        len_data += batch.shape[0]
-    average_nll = -test_lls / (len_data)
-    num_variables = batch.shape[2] #TODO: Keep track if this changes
-    bpd = average_nll / (num_variables * np.log(2.0))
-    print(f"Average test LL: {average_nll:.3f}")
-    print(f"Bits per dimension: {bpd}")
-    if epoch is None:
-        print(f'FINAL LOSS: nll={average_nll}')
+        test_lls = 0.0
+        log_pf = pf_circuit()
+        len_data = 0
+        for i, batch in enumerate(test_loader):
+            batch = batch.to(device)
+            if len(batch.shape) == 2:
+                batch = batch.unsqueeze(dim=1) # Add Channel Dimension
+            log_output = circuit(batch) # Compute the log output of the circuit
+            lls = log_output - log_pf  # Compute the log-likelihood
+            test_lls += lls.sum().item()
+            len_data += batch.shape[0]
+        average_nll = -test_lls / (len_data)
+        num_variables = batch.shape[2] #TODO: Keep track if this changes
+        bpd = average_nll / (num_variables * np.log(2.0))
+        return (average_nll, bpd)
+    
+    elif model_type == 'MADE':
+        if model_best is None:
+            model_best = torch.load(name + '.model')
+        model_best.eval()
+        loss = 0.
+        N = 0.
+        for _, test_batch in enumerate(test_loader):
+            preds = model_best.forward(test_batch)
+            loss_t = loss_fn(test_batch, preds)
+            loss = loss + loss_t.item()
+            N = N + test_batch.shape[0]
+        input_dim = test_batch.shape[1] # TODO: Keep track of this
+        loss = (loss / N)
+        bpd = bits_per_dim(loss, input_dim)
+        return (loss, bpd)
 
-    return (average_nll, bpd)
-
-def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler,
-             training_loader, val_loader, device, lam = 0., batch_size = None):
+def training(name, result_dir, model_type, max_patience, num_epochs, model, optimizer, scheduler,
+             training_loader, val_loader, device, lam = 0., batch_size = None, loss_fn = None):
     """
     Trains a given model using the specified training and validation data loaders.
 
@@ -70,64 +84,74 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
     """
     nll_val = []
     bpd_val = []
+    nll_train = []
     best_nll = 1000.
     patience = 0
     translation_repository = translation_configurations()
-    circuit, pf_circuit = model
+    if model_type == 'PC':
+        circuit, pf_circuit = model
     # Main loop
     for e in range(num_epochs):
         # TRAINING
-        circuit.train()
-        pf_circuit.train()
+        if model_type == 'PC':
+            circuit.train()
+            pf_circuit.train()
+        elif model_type == 'MADE':
+            model.train()
+        N = 0.
+        train_nll = 0.
         for _, batch in enumerate(training_loader):
             batch = batch.to(device).unsqueeze(dim=1)
-            log_output = circuit(batch)
-            log_pf = pf_circuit()   
-            lls = log_output - log_pf
-            loss = -torch.mean(lls)
+            if model_type == 'PC':
+                log_output = circuit(batch)
+                log_pf = pf_circuit()   
+                lls = log_output - log_pf
+                loss += -torch.mean(lls)
+            elif model_type == 'MADE':
+                preds = model.forward(batch)
+                loss = loss_fn(batch, preds)
+            train_nll += loss
+            N = N + batch.shape[0]
             if lam > 0:
                 sampled_translations = random.sample(translation_repository, 4)
                 s = 0
                 for translation in sampled_translations:
                     shift_left, shift_down, shift_right, shift_up = translation
                     translated_batch = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up).to(device)
-                    translated_batch = translated_batch.unsqueeze(dim=1)
-                    log_translated_output = circuit(translated_batch)
-                    log_translated_pf = pf_circuit()
-                    translated_lls = log_translated_output - log_translated_pf
-                    translated_loss = -torch.mean(translated_lls)
+
+                    if model_type == 'PC':
+                        translated_batch = translated_batch.unsqueeze(dim=1) # Can this be outside the if?
+                        log_translated_output = circuit(translated_batch)
+                        log_translated_pf = pf_circuit()
+                        translated_lls = log_translated_output - log_translated_pf
+                        translated_loss = -torch.mean(translated_lls)
+
+                    elif model_type == 'MADE':
+                        translated_preds = model.forward(translated_batch)
+                        translated_loss = loss_fn(translated_batch, translated_preds)
+
                     s += torch.abs(loss - translated_loss)
                 loss += lam * s
             loss.backward(retain_graph=True)
             optimizer.step()
             optimizer.zero_grad()
         scheduler.step()
+        train_nll = train_nll/N
         # Validation
-        model = (circuit, pf_circuit)
-        loss_val, bpd = evaluation(val_loader, device, model_best=model, epoch=e)
-        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
+        if model_type == 'PC':
+            model = (circuit, pf_circuit)
+        loss_val, val_bpd = evaluation(val_loader, device, model_type = model_type, model_best=model, epoch=e)
+        print(f'Epoch: {e}, train nll = {train_nll}, val nll = {loss_val}, val bpd = {val_bpd}')
         nll_val.append(loss_val)  # save for plotting
-        bpd_val.append(bpd)
+        bpd_val.append(val_bpd)
+        nll_train.append(train_nll)
 
-        wandb.log(
-            {
-                "epoch": e,
-                "train_loss": loss,
-                "val_loss": loss_val,
-                "bpd_val": bpd
-            }
-        )
+        #wandb.log({"epoch": e,"train_loss": loss,"val_loss": loss_val,"bpd_val": bpd})
 
         if e == 0:
-            print('saved!')
-            #torch.save(circuit, result_dir + '/' + 'circuit' + '.pt')
-            #torch.save(pf_circuit, result_dir + '/' + 'pf_circuit' + '.pt')
             best_nll = loss_val
         else:
             if loss_val < best_nll:
-                print('saved!')
-                #torch.save(circuit, result_dir + '/' + 'circuit' + '.pt')
-                #torch.save(pf_circuit, result_dir + '/' + 'pf_circuit' + '.pt')
                 best_nll = loss_val
                 patience = 0
             else:
@@ -138,5 +162,6 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
 
     nll_val = np.asarray(nll_val)
     bpd_val = np.asarray(bpd_val)
+    nll_train = np.asarray(nll_train)
 
-    return nll_val, bpd_val, model
+    return nll_val, bpd_val, nll_train, model

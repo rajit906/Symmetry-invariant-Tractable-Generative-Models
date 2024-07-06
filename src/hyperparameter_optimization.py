@@ -99,6 +99,7 @@ def hyperparameter_sweep(config=None):
                    val_loader=val_loader, device=device, lam=config.lam, batch_size = config.batch_size)
         test_nll, test_bpd = evaluation(test_loader, device, model_best=model_best)
         wandb.log({"test_bpd": test_bpd, "test_bpd": test_nll})
+        circuit, pf_circuit = model
         torch.save(circuit, 'models/circuit.pt')
         torch.save(pf_circuit, 'models/pf_circuit.pt')
         wandb.log_artifact('models/circuit.pt')
