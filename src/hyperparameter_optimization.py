@@ -8,7 +8,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 import models
 import wandb
 import yaml
-from train import evaluation, training 
+from merged_scripts.train import evaluation, training 
 from data import load_data
 import numpy as np
 from util import categorical_layer_factory, hadamard_layer_factory, dense_layer_factory, mixing_layer_factory

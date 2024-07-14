@@ -78,7 +78,7 @@ def categorical_layer_factory(
     num_channels: int
 ) -> CategoricalLayer:
     return CategoricalLayer(
-        scope, num_units, num_channels, num_categories=2,
+        scope, num_units, num_channels, num_categories=256,
         parameterization=lambda p: Parameter.from_unary(p, LogSoftmaxParameter(p.shape)),
         initializer=NormalInitializer(0.0, 1e-2)
     )
