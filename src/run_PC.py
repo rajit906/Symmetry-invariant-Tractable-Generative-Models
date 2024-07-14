@@ -21,6 +21,7 @@ from Cirkits.cirkit.pipeline import PipelineContext
 def run(args):
     random.seed(42)
     np.random.seed(42) #Remove this if you are doing several runs
+    torch.manual_seed(42)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_epochs = args.epochs
     batch_size = args.batch_size
