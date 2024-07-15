@@ -8,7 +8,7 @@ from torch.utils.data import DataLoader
 import torch.optim.lr_scheduler as lr_scheduler
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
-import wandb
+#import wandb
 from train_PC import evaluation, training 
 from data import load_data
 import numpy as np

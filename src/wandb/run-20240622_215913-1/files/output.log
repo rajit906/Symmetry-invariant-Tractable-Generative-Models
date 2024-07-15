@@ -1,8 +1,0 @@
-Epoch: 0, train nll=95.97911834716797, val nll=1.5178707288106283
-saved!
-Epoch: 1, train nll=95.32360076904297, val nll=1.455585875193278
-saved!
-Epoch: 2, train nll=89.0646743774414, val nll=1.4259497718811036
-saved!
-FINAL LOSS: nll=1.4137091011047362
-..running
