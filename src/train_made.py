@@ -23,7 +23,7 @@ def evaluation(test_loader, loss_fn, device, name=None, model_best=None, epoch=N
     model_best.eval()
     loss = 0.
     N = 0.
-    for _, batch in enumerate(test_loader):
+    for _, (batch, _) in enumerate(test_loader):
         batch = batch.to(device)
         preds = model_best.forward(batch)
         loss_t = loss_fn(batch, preds)
@@ -70,7 +70,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
     for e in range(num_epochs):
         # TRAINING
         model.train()
-        for _, batch in enumerate(training_loader):
+        for _, (batch, _) in enumerate(training_loader):
             batch = batch.to(device).unsqueeze(dim=1)
             preds = model.forward(batch)
             loss = loss_fn(batch, preds)

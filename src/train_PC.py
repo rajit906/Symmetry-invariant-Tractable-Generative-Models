@@ -29,7 +29,7 @@ def evaluation(test_loader, device, name=None, model_best=None, epoch=None):
     test_lls = 0.0
     log_pf = pf_circuit()
     len_data = 0
-    for i, batch in enumerate(test_loader):
+    for i, (batch, _) in enumerate(test_loader):
         batch = batch.to(device)#.unsqueeze(dim=1)
         if len(batch.shape) == 2:
                 batch = batch.unsqueeze(dim=1)      # Add Channel Dimension
@@ -83,7 +83,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         circuit.train()
         pf_circuit.train()
         train_nll = 0.
-        for _, batch in enumerate(training_loader):
+        for _, (batch, _) in enumerate(training_loader):
             batch = batch.to(device).unsqueeze(dim=1)
             log_output = circuit(batch)
             log_pf = pf_circuit()   
