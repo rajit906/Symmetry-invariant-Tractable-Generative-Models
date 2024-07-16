@@ -80,7 +80,7 @@ class MNISTWithoutLabels(datasets.MNIST):
         img, _ = super().__getitem__(index)  # Ignore the label
         return img
 
-def load_data(name, binarize = False, eval = False, val = True, augment = False):
+def load_data(name, data_dir, binarize = False, eval = False, val = True, augment = False):
     """
     Loads the specified dataset and returns the training, validation, and test datasets.
 
@@ -112,8 +112,8 @@ def load_data(name, binarize = False, eval = False, val = True, augment = False)
             transform.append(_translate)
 
         transform = transforms.Compose(transform)
-        train_data = MNISTWithoutLabels(root='./data', train=True, download=True, transform=transform)
-        test_data = MNISTWithoutLabels(root='./data', train=False, download=True, transform=transform)
+        train_data = MNISTWithoutLabels(root=data_dir, train=True, download=True, transform=transform)
+        test_data = MNISTWithoutLabels(root=data_dir, train=False, download=True, transform=transform)
 
     val_data = None
     if val:

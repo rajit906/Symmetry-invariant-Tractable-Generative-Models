@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from util import translate_img_batch, translation_configurations
 import random
-import wandb
+#import wandb
 
 def evaluation(test_loader, device, name=None, model_best=None, epoch=None):
     """
@@ -112,7 +112,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         loss_val, bpd = evaluation(val_loader, device, model_best=model, epoch=e)
         print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}, val bpd={bpd}')
         nll_val.append(loss_val)  # save for plotting
-        nll_train.append(loss)
+        nll_train.append(loss.item())
 
         #wandb.log(
             #{

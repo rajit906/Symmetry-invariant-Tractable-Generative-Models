@@ -17,9 +17,10 @@ from util import cross_entropy_loss_fn
 
 
 def run(args):
-    random.seed(42)
-    np.random.seed(42) #Remove this if you are doing several runs
-    torch.manual_seed(42)
+    seed = args.seed
+    random.seed(seed)
+    np.random.seed(seed) #Remove this if you are doing several runs
+    torch.manual_seed(seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_epochs = args.epochs
     batch_size = args.batch_size
@@ -31,13 +32,14 @@ def run(args):
     patience = args.patience
     input_dim = args.input_dim
     data = args.data
+    data_dir = args.data_dir
     binarize_flag = args.binarize
     n_masks = args.num_masks
     M = args.hidden_layers
-    config = {'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'hidden_layers': M}
+    config = {'seed': seed, 'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'hidden_layers': M}
     #run = wandb.init(entity="rajpal906")#entity="rajpal906", project="MADE", name="unregularized", id="1", config=hyperparameters, settings=wandb.Settings(start_method="fork"))
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    hyperparams = f"_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_NM{n_masks}_HL{M}_ID{input_dim}_{data}"
+    hyperparams = f"S{seed}_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_NM{n_masks}_HL{M}_ID{input_dim}_{data}"
     if args.binarize:
         hyperparams += "_BIN"
     hyperparams += f"_LAM{lam}_PAT{patience}"
@@ -49,7 +51,7 @@ def run(args):
         json.dump(config, json_file, indent=4)
 
     model = models.MADE(input_dim=input_dim, hidden_dims=[M], n_masks=n_masks).to(device)
-    train_data, val_data, test_data = load_data(data, binarize = binarize_flag)
+    train_data, val_data, test_data = load_data(data, data_dir, binarize = binarize_flag)
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=os.cpu_count(), drop_last = True)
     val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count(), drop_last = True)
     optimizer = torch.optim.SGD([p for p in model.parameters() if p.requires_grad == True], lr=lr, momentum=0.95) #torch.optim.Adam([p for p in circuit.parameters() if p.requires_grad == True], lr = lr)
@@ -61,7 +63,7 @@ def run(args):
     
     test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count(), drop_last = True)
     test_nll, test_bpd = evaluation(test_loader, loss_fn=cross_entropy_loss_fn, device=device, model_best=model, epoch = 0)
-    _, _, aug_test_data = load_data(data, binarize = binarize_flag, augment = True, val = False)
+    _, _, aug_test_data = load_data(data, data_dir, binarize = binarize_flag, augment = True, val = False)
     aug_test_loader = DataLoader(aug_test_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count(), drop_last = True)
     aug_test_val, aug_test_bpd = evaluation(aug_test_loader, loss_fn=cross_entropy_loss_fn, device=device, model_best=model, epoch = 0)
 
@@ -90,6 +92,8 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train a Generative Model.")
+    parser.add_argument('--seed', type=int, default=42, help='Random Seed')
+    parser.add_argument('--data_dir', type=str, default='./data', help='Data Directory')
     parser.add_argument('--hidden_layers', type=int, default=8000, help='Number of layers for the hidden layer')
     parser.add_argument('--num_masks', type=int, default=1, help='Number of Masks')
     parser.add_argument('--input_dim', type=int, default=784, help='Input Dimension')

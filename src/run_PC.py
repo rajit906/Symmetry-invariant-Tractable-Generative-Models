@@ -19,9 +19,10 @@ from Cirkits.cirkit.symbolic.circuit import Circuit
 from Cirkits.cirkit.pipeline import PipelineContext
 
 def run(args):
-    random.seed(42)
-    np.random.seed(42) #Remove this if you are doing several runs
-    torch.manual_seed(42)
+    seed = args.seed
+    random.seed(seed)
+    np.random.seed(seed) #Remove this if you are doing several runs
+    torch.manual_seed(seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_epochs = args.epochs
     batch_size = args.batch_size
@@ -33,14 +34,15 @@ def run(args):
     patience = args.patience
     input_dim = args.input_dim
     data = args.data
+    data_dir = args.data_dir
     binarize_flag = args.binarize
     num_input_units = args.num_input_units
     num_sum_units = args.num_sum_units
     height = args.height
-    config = {'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'num_input_units': num_input_units, 'num_sum_units': num_sum_units}
+    config = {'seed': seed, 'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'num_input_units': num_input_units, 'num_sum_units': num_sum_units}
     #run = wandb.init(entity="rajpal906")#entity="rajpal906", project="MADE", name="unregularized", id="1", config=hyperparameters, settings=wandb.Settings(start_method="fork"))
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    hyperparams = f"_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_H{height}_NSM{num_sum_units}_NIM{num_input_units}_ID{input_dim}_{data}"
+    hyperparams = f"S{seed}_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_H{height}_NSM{num_sum_units}_NIM{num_input_units}_ID{input_dim}_{data}"
     if args.binarize:
         hyperparams += "_BIN"
     hyperparams += f"_LAM{lam}_PAT{patience}"
@@ -70,7 +72,7 @@ def run(args):
     circuit = ctx.compile(symbolic_circuit).to(device)
     pf_circuit = ctx.integrate(circuit).to(device)
     model = (circuit, pf_circuit)
-    train_data, val_data, test_data = load_data(data, binarize = binarize_flag)
+    train_data, val_data, test_data = load_data(data, data_dir, binarize = binarize_flag)
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=os.cpu_count())
     val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count())
     test_loader = DataLoader(test_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count())
@@ -84,8 +86,9 @@ def run(args):
     circuit, pf_circuit = model
     test_nll, test_bpd = evaluation(test_loader, device, model_best=model, epoch = 0)
     print(f'Test NLL ={test_nll}, Test BPD = {test_bpd}')
-    _, _, aug_test_data = load_data(data, binarize = binarize_flag, augment = True, val = False)
-    aug_test_loader = DataLoader(aug_test_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count())
+    _, _, aug_test_data = load_data(data, data_dir, binarize = binarize_flag, augment = True, val = False)
+    aug_test_loader = DataLoader(aug_test_data, batch_size=batch_size, shuffle=False, 
+                                 )
     aug_test_val, aug_test_bpd = evaluation(aug_test_loader, device, model_best=model, epoch = 0)
 
     results_dic = {'nll_val': nll_val.tolist(), 
@@ -113,6 +116,8 @@ def run(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train a Generative Model.")
+    parser.add_argument('--seed', type=int, default=42, help='Random Seed')
+    parser.add_argument('--data_dir', type=str, default='./data', help='Data Directory')
     parser.add_argument('--num_input_units', type=int, default=8, help='Number of Input Units (sum, input)')
     parser.add_argument('--num_sum_units', type=int, default=8, help='Number of Input Units (sum, input)')
     parser.add_argument('--height', type=int, default=8, help='Height')
