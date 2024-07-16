@@ -2,9 +2,9 @@ import torch
 import numpy as np
 from util import translate_img_batch, translation_configurations
 import random
-import wandb
+#import wandb
 
-def evaluation(test_loader, loss_fn, name=None, model_best=None, epoch=None):
+def evaluation(test_loader, loss_fn, device, name=None, model_best=None, epoch=None):
     """
     Evaluates the model on the test dataset and computes the negative log-likelihood loss.
 
@@ -23,17 +23,20 @@ def evaluation(test_loader, loss_fn, name=None, model_best=None, epoch=None):
     model_best.eval()
     loss = 0.
     N = 0.
-    for _, test_batch in enumerate(test_loader):
-        preds = model_best.forward(test_batch)
-        loss_t = loss_fn(test_batch, preds)
+    for _, batch in enumerate(test_loader):
+        batch = batch.to(device)
+        preds = model_best.forward(batch)
+        loss_t = loss_fn(batch, preds)
         loss = loss + loss_t.item()
-        N = N + test_batch.shape[0]
-    loss = (loss / N)
+        N = N + batch.shape[0]
+    loss = (loss / N) * batch.shape[0]
+    num_variables = batch.shape[1] #TODO: Keep track if this changes
+    bpd = loss / (num_variables * np.log(2.0))
 
     if epoch is None:
         print(f'FINAL LOSS: nll={loss}')
 
-    return loss
+    return (loss, bpd)
 
 def training(name, result_dir, max_patience, num_epochs, model, optimizer, scheduler, loss_fn, 
              training_loader, val_loader, device, lam = 0., batch_size = None):
@@ -59,6 +62,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         np.ndarray: Array of negative log-likelihoods (validation losses) of the model.
     """
     nll_val = []
+    nll_train = []
     best_nll = 1000.
     patience = 0
     translation_repository = translation_configurations()
@@ -83,11 +87,12 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
             optimizer.zero_grad()
             loss.backward(retain_graph=True)
             optimizer.step()
-        scheduler.step()
+        #scheduler.step()
         # Validation
-        loss_val = evaluation(val_loader, loss_fn, model_best=model, epoch=e)
-        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val * batch_size}')
+        loss_val, _ = evaluation(val_loader, loss_fn, device=device, model_best=model, epoch=e)
+        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
         nll_val.append(loss_val)  # save for plotting
+        nll_train.append(loss.item())
 
         #wandb.log(
             #{
@@ -98,13 +103,13 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         #)
 
         if e == 0:
-            print('saved!')
-            torch.save(model, result_dir + '/' + name + '.model')
+            #print('saved!')
+            #torch.save(model, result_dir + '/' + name + '.model')
             best_nll = loss_val
         else:
             if loss_val < best_nll:
-                print('saved!')
-                torch.save(model, result_dir + '/' + name + '.model')
+                #print('saved!')
+                #torch.save(model, result_dir + '/' + name + '.model')
                 best_nll = loss_val
                 patience = 0
                 #samples_generated(name, val_loader, extra_name="_epoch_" + str(e))
@@ -115,5 +120,6 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
             break
 
     nll_val = np.asarray(nll_val)
+    nll_train = np.asarray(nll_train)#.cpu().detach().numpy())
 
-    return nll_val
+    return nll_val, nll_train, model

@@ -1,4 +1,9 @@
 **/**/**/*.model
-#Cirkit/
+Cirkits/
+backups/
 **/**/**/*.pt
 wandb/
+results_PC/
+results_MADE/
+data/
+experiment_scripts/
