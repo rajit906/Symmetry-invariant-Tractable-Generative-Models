@@ -71,7 +71,7 @@ def run(args):
                     'nll_train': nll_train.tolist(),
                     'test_val': test_nll,
                     'test_bpd': test_bpd,
-                    'aug_test_bpd': aug_test_bpd,
+                    'aug_test_bpd': 'N/A',
                     'aug_test_val': aug_test_val,
                     'KID': 'N/A'}
         

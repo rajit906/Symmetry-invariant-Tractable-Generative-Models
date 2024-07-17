@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from util import translate_img_batch, translation_configurations
 import random
+import time
 #import wandb
 
 def evaluation(test_loader, loss_fn, device, name=None, model_best=None, epoch=None):
@@ -67,6 +68,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
     patience = 0
     translation_repository = translation_configurations()
     # Main loop
+    start_time = time.time()
     for e in range(num_epochs):
         # TRAINING
         model.train()
@@ -90,7 +92,9 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         #scheduler.step()
         # Validation
         loss_val, _ = evaluation(val_loader, loss_fn, device=device, model_best=model, epoch=e)
-        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}')
+        end_time = time.time()
+        time_elapsed = end_time - start_time
+        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}, time={time_elapsed}')
         nll_val.append(loss_val)  # save for plotting
         nll_train.append(loss.item())
 
@@ -103,16 +107,11 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         #)
 
         if e == 0:
-            #print('saved!')
-            #torch.save(model, result_dir + '/' + name + '.model')
             best_nll = loss_val
         else:
             if loss_val < best_nll:
-                #print('saved!')
-                #torch.save(model, result_dir + '/' + name + '.model')
                 best_nll = loss_val
                 patience = 0
-                #samples_generated(name, val_loader, extra_name="_epoch_" + str(e))
             else:
                 patience = patience + 1
 

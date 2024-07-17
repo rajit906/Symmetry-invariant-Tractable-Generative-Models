@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from util import translate_img_batch, translation_configurations
 import random
+import time
 #import wandb
 
 def evaluation(test_loader, device, name=None, model_best=None, epoch=None):
@@ -79,6 +80,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
     circuit, pf_circuit = model
     # Main loop
     for e in range(num_epochs):
+        start_time = time.time()
         # TRAINING
         circuit.train()
         pf_circuit.train()
@@ -110,7 +112,9 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         # Validation
         model = (circuit, pf_circuit)
         loss_val, bpd = evaluation(val_loader, device, model_best=model, epoch=e)
-        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}, val bpd={bpd}')
+        end_time = time.time()
+        time_elapsed = end_time - start_time
+        print(f'Epoch: {e}, train nll={loss}, val nll={loss_val}, val bpd={bpd}, time={time_elapsed}')
         nll_val.append(loss_val)  # save for plotting
         nll_train.append(loss.item())
 
@@ -124,15 +128,9 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         #)
 
         if e == 0:
-            print('saved!')
-            #torch.save(circuit, result_dir + '/' + 'circuit' + '.pt')
-            #torch.save(pf_circuit, result_dir + '/' + 'pf_circuit' + '.pt')
             best_nll = loss_val
         else:
             if loss_val < best_nll:
-                print('saved!')
-                #torch.save(circuit, result_dir + '/' + 'circuit' + '.pt')
-                #torch.save(pf_circuit, result_dir + '/' + 'pf_circuit' + '.pt')
                 best_nll = loss_val
                 patience = 0
             else:
