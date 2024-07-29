@@ -26,6 +26,7 @@ def run(args):
     batch_size = args.batch_size
     lr = args.learning_rate
     result_dir = args.model_path
+    model_save = args.model_save
     if not(os.path.exists(result_dir)):
         os.mkdir(result_dir)
     lam = args.lam
@@ -40,9 +41,11 @@ def run(args):
     #run = wandb.init(entity="rajpal906")#entity="rajpal906", project="MADE", name="unregularized", id="1", config=hyperparameters, settings=wandb.Settings(start_method="fork"))
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     hyperparams = f"S{seed}_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_NM{n_masks}_HL{M}_ID{input_dim}_{data}"
-    if args.binarize:
+    if binarize_flag:
         hyperparams += "_BIN"
     hyperparams += f"_LAM{lam}_PAT{patience}"
+    if model_save:
+        hyperparams += "_MOD"
     name = f"{current_time}_{hyperparams}"
     if not(os.path.exists(result_dir + '/' + name)):
         os.mkdir(result_dir + '/' + name)
@@ -78,12 +81,8 @@ def run(args):
     with open(result_dir + '/' + name + '/results.json', 'w') as json_file:
         json.dump(results_dic, json_file, indent=4)
     print(f"test_bpd = {test_bpd}", f"test_nll = {test_nll}", f"aug_test_bpd = {aug_test_bpd}", f"aug_test_nll = {aug_test_val}")
-
-    #torch.save(circuit, 'models/pc_test_circuit.pt')
-    #torch.save(pf_circuit, 'models/pc_test_pf_circuit.pt')
-    #circuit = torch.load('models/pc_test_circuit.pt')
-    #pf_circuit = torch.load('models/pc_test_pf_circuit.pt')
-    #model_best = (circuit, pf_circuit)
+    if model_save:
+        torch.save(model, result_dir + '/' + name + '/model_best.model' )
     #wandb.log({"test_bpd": test_bpd, "test_loss": test_nll})
     #run.log_artifact(result_dir + '/' + name + '.model')
     #run.finish()
@@ -103,6 +102,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for the optimizer')
     parser.add_argument('--model_path', type=str, default='model.pth', help='Path to save the trained model')
+    parser.add_argument('--model_save', action='store_true', help='Flag to use binarized data or not')
     parser.add_argument('--lam', type=float, default=1.0, help='Regularization Hyperparameter')
     parser.add_argument('--patience', type=int, default=20, help='Early Stopping Mechanism')
 

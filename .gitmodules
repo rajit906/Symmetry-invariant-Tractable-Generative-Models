@@ -4,6 +4,9 @@
 [submodule "src/src/Cirkit"]
 	path = src/src/Cirkit
 	url = https://github.com/april-tools/cirkit.git
-[submodule "src/Cirkits"]
-	path = src/Cirkits
-	url = https://github.com/april-tools/cirkit.git
+[submodule "src/precision-recall-distributions"]
+	path = src/precision-recall-distributions
+	url = https://github.com/msmsajjadi/precision-recall-distributions.git
+[submodule "src/--force"]
+	path = src/--force
+	url = https://github.com/LennertDeSmet/cirkit.git

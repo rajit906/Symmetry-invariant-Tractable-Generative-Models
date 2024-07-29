@@ -86,7 +86,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
         pf_circuit.train()
         train_nll = 0.
         for _, (batch, _) in enumerate(training_loader):
-            batch = batch.to(device).unsqueeze(dim=1)
+            batch = batch.unsqueeze(dim=1).to(device)
             log_output = circuit(batch)
             log_pf = pf_circuit()   
             lls = log_output - log_pf
@@ -98,7 +98,7 @@ def training(name, result_dir, max_patience, num_epochs, model, optimizer, sched
                 for translation in sampled_translations:
                     shift_left, shift_down, shift_right, shift_up = translation
                     translated_batch = translate_img_batch(batch, shift_left, shift_down, shift_right, shift_up).to(device)
-                    translated_batch = translated_batch.unsqueeze(dim=1)
+                    translated_batch = translated_batch.unsqueeze(dim=1).to(device)
                     log_translated_output = circuit(translated_batch)
                     log_translated_pf = pf_circuit()
                     translated_lls = log_translated_output - log_translated_pf
