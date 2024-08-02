@@ -1,0 +1,6 @@
+[submodule "src/precision_recall"]
+	path = src/precision_recall
+	url = https://github.com/msmsajjadi/precision-recall-distributions.git
+[submodule "src/Cirkits"]
+	path = src/Cirkits
+	url = https://github.com/LennertDeSmet/cirkit.git
