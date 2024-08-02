@@ -78,7 +78,7 @@ def cross_entropy_loss_fn(x, preds):
 
 ### Probabilistic Circuits
 
-from Cirkits.cirkit.symbolic.parameters import LogSoftmaxParameter, ExpParameter, Parameter
+from Cirkits.cirkit.symbolic.parameters import LogSoftmaxParameter, SoftmaxParameter, Parameter
 from Cirkits.cirkit.symbolic.layers import CategoricalLayer, DenseLayer, HadamardLayer, MixingLayer
 from Cirkits.cirkit.symbolic.initializers import NormalInitializer
 from Cirkits.cirkit.utils.scope import Scope
@@ -106,7 +106,7 @@ def dense_layer_factory(
 ) -> DenseLayer:
     return DenseLayer(
         scope, num_input_units, num_output_units,
-        parameterization=lambda p: Parameter.from_unary(p, ExpParameter(p.shape)),
+        parameterization=lambda p: Parameter.from_unary(p, SoftmaxParameter(p.shape)),
         initializer=NormalInitializer(0.0, 1e-1)
     )
 
@@ -115,57 +115,13 @@ def mixing_layer_factory(
 ) -> MixingLayer:
     return MixingLayer(
         scope, num_units, arity,
-        parameterization=lambda p: Parameter.from_unary(p, ExpParameter(p.shape)),
+        parameterization=lambda p: Parameter.from_unary(p, SoftmaxParameter(p.shape)),
         initializer=NormalInitializer(0.0, 1e-1)
     )
 
 
 ### General Purpose
 
-
-def samples_real(name, test_loader, D):
-    # REAL-------
-    num_x = 4
-    num_y = 4
-    x = next(iter(test_loader)).detach().numpy()
-
-    fig, ax = plt.subplots(num_x, num_y)
-    for i, ax in enumerate(ax.flatten()):
-        plottable_image = np.reshape(x[i], (D, D))
-        ax.imshow(plottable_image, cmap='gray')
-        ax.axis('off')
-
-    plt.savefig(name+'_real_images.pdf', bbox_inches='tight')
-    plt.close()
-
-
-def samples_generated(name, data_loader, D, extra_name=''):
-    x = next(iter(data_loader)).detach().numpy()
-
-    # GENERATIONS-------
-    model_best = torch.load(name + '.model')
-    model_best.eval()
-
-    num_x = 4
-    num_y = 4
-    x = model_best.sample(num_x * num_y).detach().numpy()
-
-    fig, ax = plt.subplots(num_x, num_y)
-    for i, ax in enumerate(ax.flatten()):
-        plottable_image = np.reshape(x[i], (D, D))
-        ax.imshow(plottable_image, cmap='gray')
-        ax.axis('off')
-
-    plt.savefig(name + '_generated_images' + extra_name + '.pdf', bbox_inches='tight')
-    plt.close()
-
-
-def plot_curve(name, nll_val):
-    plt.plot(np.arange(len(nll_val)), nll_val, linewidth='3')
-    plt.xlabel('epochs')
-    plt.ylabel('nll')
-    plt.savefig(name + '_nll_val_curve.pdf', bbox_inches='tight')
-    plt.close()
 
 def translate_img_batch(img_batch, shift_left = 0, shift_down = 0, shift_right = 0, shift_up = 0):
     batch_size = img_batch.size(0)
@@ -246,142 +202,8 @@ def process_directory(directory):
                 file_path = os.path.join(root, file)
                 update_imports_in_file(file_path)
 
-def test_lls_made(model_best_vanilla, model_best_regularized, model_best_regularized_plus, device, seed = 42):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    random.seed(seed)
-    np.random.seed(seed) #Remove this if you are doing several runs
-    torch.manual_seed(seed)
 
-    _, _, test_data = load_data('mnist', './data', binarize=True, val = False)
-    test_loader =  DataLoader(test_data, batch_size=1, shuffle=False)
-    _, _, aug_test_data = load_data('mnist', './data', binarize=True, augment = True, val = False)
-    aug_test_loader = DataLoader(aug_test_data, batch_size=1, shuffle=False)
-    test_lls_vanilla, test_lls_regularized, test_lls_regularized_plus = [], [], []
-    test_lls_vanilla_aug, test_lls_regularized_aug, test_lls_regularized_plus_aug = [], [], []
-    test_diffs_vanilla, test_diffs_regularized, test_diffs_regularized_plus = [], [], []
-
-    for i, ((batch, _), (aug_batch, _)) in enumerate(zip(test_loader, aug_test_loader)):
-        batch = batch.to(device)
-        aug_batch = aug_batch.to(device)#.squeeze(dim=1)
-        model_best_vanilla.eval()
-        model_best_regularized.eval()
-        model_best_regularized_plus.eval()
-
-        preds = model_best_vanilla.forward(batch)
-        test_lls_vanilla.append(cross_entropy_loss_fn(batch, preds).item())
-        preds = model_best_vanilla.forward(aug_batch)
-        test_lls_vanilla_aug.append(cross_entropy_loss_fn(aug_batch, preds).item())
-        test_diffs_vanilla.append(test_lls_vanilla[i] - test_lls_vanilla_aug[i])
-
-        preds = model_best_regularized.forward(batch)
-        test_lls_regularized.append(cross_entropy_loss_fn(batch, preds).item())
-        preds = model_best_regularized.forward(aug_batch)
-        test_lls_regularized_aug.append(cross_entropy_loss_fn(aug_batch, preds).item())
-        test_diffs_regularized.append(test_lls_regularized[i] - test_lls_regularized_aug[i])
-
-        preds = model_best_regularized_plus.forward(batch)
-        test_lls_regularized_plus.append(cross_entropy_loss_fn(batch, preds).item())
-        preds = model_best_regularized_plus.forward(aug_batch)
-        test_lls_regularized_plus_aug.append(cross_entropy_loss_fn(aug_batch, preds).item())
-        test_diffs_regularized_plus.append(test_lls_regularized_plus[i] - test_lls_regularized_plus_aug[i])
-    return test_lls_vanilla, test_lls_vanilla_aug, test_diffs_vanilla, test_lls_regularized, test_lls_regularized_aug, test_diffs_regularized, test_lls_regularized_plus, test_lls_regularized_plus_aug, test_diffs_regularized_plus
-
-def train_lls_made(model_best_vanilla, model_best_regularized, model_best_regularized_plus, device):
-    train_data, _, _ = load_data('mnist', './data', binarize=True, val = False)
-    train_loader =  DataLoader(train_data, batch_size=1, shuffle=False)
-    train_lls_vanilla, train_lls_regularized, train_lls_regularized_plus = [], [], []
-    for i, (batch, _) in enumerate(train_loader):
-        batch = batch.to(device)
-        preds = model_best_vanilla.forward(batch)
-        train_lls_vanilla.append(cross_entropy_loss_fn(batch, preds).item())
-
-        preds = model_best_regularized.forward(batch)
-        train_lls_regularized.append(cross_entropy_loss_fn(batch, preds).item())
-
-        preds = model_best_regularized_plus.forward(batch)
-        train_lls_regularized_plus.append(cross_entropy_loss_fn(batch, preds).item())
-    return train_lls_vanilla, train_lls_regularized, train_lls_regularized_plus
-
-def test_lls_pc(model_best_vanilla, model_best_regularized, model_best_regularized_plus, device, seed = 42):
-    random.seed(seed)
-    np.random.seed(seed) #Remove this if you are doing several runs
-    torch.manual_seed(seed)
-    _, _, test_data = load_data('mnist', './data', val = False)
-    test_loader =  DataLoader(test_data, batch_size=1, shuffle=False)
-    _, _, aug_test_data = load_data('mnist', './data', augment = True, val = False)
-    aug_test_loader = DataLoader(aug_test_data, batch_size=1, shuffle=False)
-    test_lls_vanilla, test_lls_regularized, test_lls_regularized_plus = [], [], []
-    test_lls_vanilla_aug, test_lls_regularized_aug, test_lls_regularized_plus_aug = [], [], []
-    test_diffs_vanilla, test_diffs_regularized, test_diffs_regularized_plus = [], [], []
-
-    circuit_reg, pf_circuit_reg = model_best_regularized
-    circuit_reg.eval()
-    pf_circuit_reg.eval()
-    circuit_reg_plus, pf_circuit_reg_plus = model_best_regularized_plus
-    circuit_reg_plus.eval()
-    pf_circuit_reg_plus.eval()
-    circuit, pf_circuit = model_best_vanilla
-    circuit.eval()
-    pf_circuit.eval()
-
-    for i, ((batch, _), (aug_batch, _)) in enumerate(zip(test_loader, aug_test_loader)):
-        batch = batch.to(device).unsqueeze(dim=1)
-        aug_batch = aug_batch.to(device)#.unsqueeze(dim=1)
-
-        log_pf = pf_circuit()
-        log_output = circuit(batch)
-        test_lls_vanilla.append((log_output - log_pf).sum().item())
-        log_output = circuit(aug_batch)
-        test_lls_vanilla_aug.append((log_output - log_pf).sum().item())
-        test_diffs_vanilla.append(test_lls_vanilla[i] - test_lls_vanilla_aug[i])
-
-        log_pf = pf_circuit_reg()
-        log_output = circuit_reg(batch)
-        test_lls_regularized.append((log_output - log_pf).sum().item())
-        log_output = circuit_reg(aug_batch)
-        test_lls_regularized_aug.append((log_output - log_pf).sum().item())
-        test_diffs_regularized.append(test_lls_regularized[i] - test_lls_regularized_aug[i])
-
-        log_pf = pf_circuit_reg_plus()
-        log_output = circuit_reg_plus(batch)
-        test_lls_regularized_plus.append((log_output - log_pf).sum().item())
-        log_output = circuit_reg_plus(aug_batch)
-        test_lls_regularized_plus_aug.append((log_output - log_pf).sum().item())
-        test_diffs_regularized_plus.append(test_lls_regularized_plus[i] - test_lls_regularized_plus_aug[i])
-        return test_lls_vanilla, test_lls_vanilla_aug, test_diffs_vanilla, test_lls_regularized, test_lls_regularized_aug, test_diffs_regularized, test_lls_regularized_plus, test_lls_regularized_plus_aug, test_diffs_regularized_plus
-    
-def train_lls_pc(model_best_vanilla, model_best_regularized, model_best_regularized_plus, device):
-    train_data, _, _ = load_data('mnist', './data', val = False)
-    train_loader =  DataLoader(train_data, batch_size=1, shuffle=False)
-    train_lls_vanilla, train_lls_regularized, train_lls_regularized_plus = [], [], []
-
-    circuit_reg, pf_circuit_reg = model_best_regularized
-    circuit_reg.eval()
-    pf_circuit_reg.eval()
-    circuit_reg_plus, pf_circuit_reg_plus = model_best_regularized_plus
-    circuit_reg_plus.eval()
-    pf_circuit_reg_plus.eval()
-    circuit, pf_circuit = model_best_vanilla
-    circuit.eval()
-    pf_circuit.eval()
-
-    for i, (batch, _) in enumerate(train_loader):
-        batch = batch.to(device).unsqueeze(dim=1)
-
-        log_pf = pf_circuit()
-        log_output = circuit(batch)
-        train_lls_vanilla.append((log_output - log_pf).sum().item())
-
-        log_pf = pf_circuit_reg()
-        log_output = circuit_reg(batch)
-        train_lls_regularized.append((log_output - log_pf).sum().item())
-
-        log_pf = pf_circuit_reg_plus()
-        log_output = circuit_reg_plus(batch)
-        train_lls_regularized_plus.append((log_output - log_pf).sum().item())
-    return train_lls_vanilla, train_lls_regularized, train_lls_regularized_plus
-
-def plot_samples(model, n, model_type):
+def plot_samples(model, n, model_type, save_dir = None):
     # Ensure n is a perfect square for an n x n grid
     grid_size = int(n ** 0.5)
     assert grid_size ** 2 == n, "n must be a perfect square for an n x n grid"
@@ -391,7 +213,7 @@ def plot_samples(model, n, model_type):
     dim = x.shape[1] * x.shape[2] * x.shape[3]
     samples = [(x[i].reshape(1,-1), 0) for i in range(len(x))]
     data_loader = DataLoader(samples,  batch_size=1)
-    nlls = compute_nlls(model, data_loader=data_loader, model_type = 'MADE').tolist()
+    nlls = compute_nlls(model, data_loader=data_loader, model_type = model_type).tolist()
     samples = [x[i].reshape(int(dim**0.5),int(dim**0.5)).detach().numpy() for i in range(len(x))]
     samples_nll = list(zip(samples,nlls))
     
@@ -408,12 +230,14 @@ def plot_samples(model, n, model_type):
     for i, (img, nll) in enumerate(samples_nll):
         ax = axes1[i // grid_size, i % grid_size]
         ax.imshow(img, cmap='gray')
-        ax.set_title(f"{round(nll, 1)}")
+        ax.set_title(f"{round(nll, 1)}", fontsize=20, fontweight='bold')
         ax.axis('off')
 
     # Adjust layout and show plot
     fig1.tight_layout()
-    plt.show()
+    #plt.show()
+    if save_dir:
+        plt.savefig(save_dir, format='pdf', bbox_inches='tight')
     plt.close(fig1)
     
     return fig1
@@ -422,7 +246,11 @@ def sample_model(model, n, model_type):
     if model_type == 'MADE':
         x = model.sample(n)
     if model_type == 'PC':
-        pass
+        circuit, _ = model
+        x = circuit.sample_forward(n)[0]
+        h = int(x.shape[-1]**0.5)
+        w = h
+        x = x.reshape(n,1,h,w)
     return x
 
 def compute_nlls(model, data_loader, model_type = 'MADE'):
@@ -450,16 +278,16 @@ def compute_nlls(model, data_loader, model_type = 'MADE'):
     return np.array(nlls)
 
 
-def roc_pc(test_loader, test_loader_emnist, model, model_type, nll_mnist = None, nll_emnist = None):
-    if not (nll_mnist and nll_emnist):
+def roc_pc(test_loader, test_loader_ood, model, model_type, nll_mnist = None, nll_ood = None):
+    if not (nll_mnist.tolist() and nll_ood.tolist()):
         nll_mnist = compute_nlls(model, test_loader, model_type=model_type)
-        nll_emnist = compute_nlls(model, test_loader_emnist, model_type=model_type)
-    nll_emnist = nll_emnist[:len(nll_mnist)]
+        nll_ood = compute_nlls(model, test_loader_ood, model_type=model_type)
+    nll_ood = nll_ood[:len(nll_mnist)]
     max_nll_mnist = max(nll_mnist)
-    max_nll_emnist = max(nll_emnist)
+    max_nll_ood = max(nll_ood)
     nlls_mnist = [(nll/max_nll_mnist, 1) for nll in nll_mnist]
-    nlls_emnist = [(nll/max_nll_emnist, 0) for nll in nll_emnist]
-    nlls = nlls_mnist + nlls_emnist
+    nlls_ood = [(nll/max_nll_ood, 0) for nll in nll_ood]
+    nlls = nlls_mnist + nlls_ood
     nlls = sorted(nlls, key=lambda x: x[0], reverse = True)
     nll_scores = [val[0] for val in nlls]
     nll_labels = [val[1] for val in nlls]
@@ -467,7 +295,7 @@ def roc_pc(test_loader, test_loader_emnist, model, model_type, nll_mnist = None,
     roc_auc = metrics.roc_auc_score(nll_labels, nll_scores)
     precision, recall, pr_thresholds = metrics.precision_recall_curve(nll_labels, nll_scores)
     pr_auc = metrics.auc(recall, precision)
-    return fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_emnist
+    return fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_ood
 # Specify the root directory to start the search
 #root_directory = 'Cirkits/'  # Change this to your target directory
 
@@ -533,14 +361,14 @@ def get_epsilon(model, data, nll_trained_model, model_type, K, M, alpha=0.99):
 
     epsilon_M_alpha = np.quantile(epsilons, alpha)
 
-    return epsilons, epsilon_M_alpha, M
+    return epsilons, epsilon_M_alpha
 
-def typicality_test(model, train_data, val_data, test_data, test_data_emnist, K, alpha, model_type, M_init = 2):
+def typicality_test(model, train_data, val_data, test_data, test_data_ood, K, alpha, model_type, M = 2):
         train_loader = DataLoader(train_data, batch_size=64, shuffle=False)
         nll_trained_model = np.mean(compute_nlls(model, train_loader, model_type = model_type))
-        _, epsilon, M = get_epsilon(model, val_data, nll_trained_model, model_type, K=K, M=M_init, alpha=alpha)
+        _, epsilon = get_epsilon(model, val_data, nll_trained_model, model_type, K=K, M=M, alpha=alpha)
         test_loader = DataLoader(test_data, batch_size=M, shuffle=False)
-        test_loader_emnist = DataLoader(test_data_emnist, batch_size=M, shuffle=False)
+        test_loader_ood = DataLoader(test_data_ood, batch_size=M, shuffle=False)
         ood_mnist, _ = OOD_detection(model, test_loader, nll_trained_model, epsilon, model_type)
-        ood_emnist, _ = OOD_detection(model, test_loader_emnist, nll_trained_model, epsilon, model_type)
-        return ood_mnist, ood_emnist
+        ood_data, _ = OOD_detection(model, test_loader_ood, nll_trained_model, epsilon, model_type)
+        return ood_mnist, ood_data

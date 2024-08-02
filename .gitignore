@@ -1,5 +1,6 @@
 **/**/**/*.model
 Cirkits/
+precision_recall/
 backups/
 **/**/**/*.pt
 wandb/
@@ -8,3 +9,5 @@ results_MADE/
 data/
 experiment_scripts/
 experiment_logs/
+plots.ipynb
+images/

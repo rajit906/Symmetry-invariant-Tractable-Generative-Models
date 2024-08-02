@@ -46,7 +46,7 @@ def load_data(name, data_dir, binarize = False, eval = False, val = True, augmen
     Returns:
         tuple: A tuple containing the training dataset, validation dataset, and test dataset.
     """
-    transform = [transforms.ToTensor(), _flatten]
+    transform = [transforms.ToTensor(), transforms.Resize((28, 28)), _flatten]
 
     if binarize:
         transform.append(_dynamically_binarize)
@@ -71,8 +71,13 @@ def load_data(name, data_dir, binarize = False, eval = False, val = True, augmen
         train_data = datasets.FashionMNIST(root=data_dir, train=True, download=False, transform=transform)
         test_data = datasets.FashionMNIST(root=data_dir, train=False, download=False, transform=transform)
     if name == 'emnist':
-        train_data = datasets.EMNIST(root=data_dir, split='letters', train=True, download=False, transform=transform)
+        #train_data = datasets.EMNIST(root=data_dir, split='letters', train=True, download=False, transform=transform)
+        train_data = None
         test_data = datasets.EMNIST(root=data_dir, split='letters', train=False, download=False, transform=transform)
+    if name == 'omniglot':
+        train_data = None
+        #train_data = datasets.Omniglot(root=data_dir, train=True, download=True, transform=transform)
+        test_data = datasets.Omniglot(root=data_dir, background=False, download=False, transform=transform)
 
     val_data = None
     if val:
