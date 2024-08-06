@@ -79,7 +79,7 @@ def cross_entropy_loss_fn(x, preds):
 
 ### Probabilistic Circuits
 
-from Cirkits.cirkit.symbolic.parameters import LogSoftmaxParameter, SoftmaxParameter, Parameter
+from Cirkits.cirkit.symbolic.parameters import LogSoftmaxParameter, SoftmaxParameter, ExpParameter, Parameter, TensorParameter
 from Cirkits.cirkit.symbolic.layers import CategoricalLayer, DenseLayer, HadamardLayer, MixingLayer
 from Cirkits.cirkit.symbolic.initializers import NormalInitializer
 from Cirkits.cirkit.utils.scope import Scope
@@ -91,8 +91,10 @@ def categorical_layer_factory(
 ) -> CategoricalLayer:
     return CategoricalLayer(
         scope, num_units, num_channels, num_categories=256,
-        parameterization=lambda p: Parameter.from_unary(p, LogSoftmaxParameter(p.shape)),
-        initializer=NormalInitializer(0.0, 1e-2)
+        logits_factory=lambda shape: Parameter.from_unary(
+            LogSoftmaxParameter(shape),
+            TensorParameter(*shape, initializer=NormalInitializer(0.0, 1e-2))
+        )
     )
 
 def hadamard_layer_factory(
@@ -107,8 +109,10 @@ def dense_layer_factory(
 ) -> DenseLayer:
     return DenseLayer(
         scope, num_input_units, num_output_units,
-        parameterization=lambda p: Parameter.from_unary(p, SoftmaxParameter(p.shape)),
-        initializer=NormalInitializer(0.0, 1e-1)
+        weight_factory=lambda shape: Parameter.from_unary(
+            SoftmaxParameter(shape),
+            TensorParameter(*shape, initializer=NormalInitializer(0.0, 1e-1))
+        )
     )
 
 def mixing_layer_factory(
@@ -116,8 +120,10 @@ def mixing_layer_factory(
 ) -> MixingLayer:
     return MixingLayer(
         scope, num_units, arity,
-        parameterization=lambda p: Parameter.from_unary(p, SoftmaxParameter(p.shape)),
-        initializer=NormalInitializer(0.0, 1e-1)
+        weight_factory=lambda shape: Parameter.from_unary(
+            SoftmaxParameter(shape),
+            TensorParameter(*shape, initializer=NormalInitializer(0.0, 1e-1))
+        )
     )
 
 
