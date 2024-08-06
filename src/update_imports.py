@@ -8,6 +8,11 @@ def update_imports_in_file(file_path):
     # Regular expressions to match and replace import statements
     updated_content = re.sub(r'from cirkit\.', 'from Cirkits.cirkit.', content)
     updated_content = re.sub(r'import cirkit\.', 'import Cirkits.cirkit.', updated_content)
+    updated_content = re.sub(
+        r'(import einops as E)',
+        "import sys\nsys.path.append('/work/tc064/tc064/s2592586/test/lib/python3.11/site-packages')\n\\1",
+        updated_content
+    )
 
     # Write the updated content back to the file
     with open(file_path, 'w') as file:
