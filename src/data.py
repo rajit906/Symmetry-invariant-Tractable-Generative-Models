@@ -35,8 +35,26 @@ def _translate(x):
     sampled_translation = random.sample(translation_repository, 1)
     shift_left, shift_down, shift_right, shift_up = sampled_translation[0]
     return translate_img_batch(x.unsqueeze(dim=0), shift_left, shift_down, shift_right, shift_up)
+
+class AugmentedDataset(Dataset):
+    def __init__(self, original_dataset, augment_fn, num_augments):
+        self.original_dataset = original_dataset
+        self.augment_fn = augment_fn
+        self.num_augments = num_augments
+
+    def __len__(self):
+        return len(self.original_dataset) * (self.num_augments + 1)
+
+    def __getitem__(self, idx):
+        original_idx = idx % len(self.original_dataset)
+        if idx < len(self.original_dataset):
+            return self.original_dataset[original_idx]
+        else:
+            img, target = self.original_dataset[original_idx]
+            augmented_img = self.augment_fn(img)
+            return augmented_img.squeeze(0), target
     
-def load_data(name, data_dir, binarize = False, eval = False, val = True, augment = False):
+def load_data(name, data_dir, binarize = False, eval = False, val = True, augment = False, augment_extend=False, num_augments=4):
     """
     Loads the specified dataset and returns the training, validation, and test datasets.
 
@@ -63,12 +81,14 @@ def load_data(name, data_dir, binarize = False, eval = False, val = True, augmen
         transform.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
     if augment:
         transform.append(_translate)
+
     transform = transforms.Compose(transform)
     if name == 'mnist':
         train_data = datasets.MNIST(root=data_dir, train=True, download=False, transform=transform)
         test_data = datasets.MNIST(root=data_dir, train=False, download=False, transform=transform)
     if name == 'fashion':
-        train_data = datasets.FashionMNIST(root=data_dir, train=True, download=False, transform=transform)
+        train_data = None
+        #train_data = datasets.FashionMNIST(root=data_dir, train=True, download=False, transform=transform)
         test_data = datasets.FashionMNIST(root=data_dir, train=False, download=False, transform=transform)
     if name == 'emnist':
         #train_data = datasets.EMNIST(root=data_dir, split='letters', train=True, download=False, transform=transform)
@@ -84,5 +104,8 @@ def load_data(name, data_dir, binarize = False, eval = False, val = True, augmen
         train_size = int(0.9 * len(train_data))
         val_size = len(train_data) - train_size
         train_data, val_data = random_split(train_data, [train_size, val_size])
+        
+    if augment_extend:
+        train_data = AugmentedDataset(train_data, _translate, num_augments)
         
     return (train_data, val_data, test_data)

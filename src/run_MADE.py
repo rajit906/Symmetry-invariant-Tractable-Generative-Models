@@ -35,15 +35,18 @@ def run(args):
     data = args.data
     data_dir = args.data_dir
     binarize_flag = args.binarize
+    augment_extend_flag = args.augment_extend
     n_masks = args.num_masks
     M = args.hidden_layers
-    config = {'seed': seed, 'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'hidden_layers': M}
+    config = {'seed': seed, 'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'hidden_layers': M, 'augment': augment_extend_flag}
     #run = wandb.init(entity="rajpal906")#entity="rajpal906", project="MADE", name="unregularized", id="1", config=hyperparameters, settings=wandb.Settings(start_method="fork"))
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     hyperparams = f"S{seed}_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_NM{n_masks}_HL{M}_ID{input_dim}_{data}"
     if binarize_flag:
         hyperparams += "_BIN"
     hyperparams += f"_LAM{lam}_PAT{patience}"
+    if augment_extend_flag:
+        hyperparams += "_AUG"
     if model_save:
         hyperparams += "_MOD"
     name = f"{current_time}_{hyperparams}"
@@ -54,7 +57,7 @@ def run(args):
         json.dump(config, json_file, indent=4)
 
     model = models.MADE(input_dim=input_dim, hidden_dims=[M], n_masks=n_masks).to(device)
-    train_data, val_data, test_data = load_data(data, data_dir, binarize = binarize_flag)
+    train_data, val_data, test_data = load_data(data, data_dir, binarize = binarize_flag, augment_extend = augment_extend_flag)
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=os.cpu_count(), drop_last = True)
     val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False, num_workers=os.cpu_count(), drop_last = True)
     optimizer = torch.optim.SGD([p for p in model.parameters() if p.requires_grad == True], lr=lr, momentum=0.95) #torch.optim.Adam([p for p in circuit.parameters() if p.requires_grad == True], lr = lr)
@@ -75,8 +78,7 @@ def run(args):
                     'test_val': test_nll,
                     'test_bpd': test_bpd,
                     'aug_test_bpd': 'N/A',
-                    'aug_test_val': aug_test_val,
-                    'KID': 'N/A'}
+                    'aug_test_val': aug_test_val}
         
     with open(result_dir + '/' + name + '/results.json', 'w') as json_file:
         json.dump(results_dic, json_file, indent=4)
@@ -98,6 +100,7 @@ if __name__ == '__main__':
     parser.add_argument('--input_dim', type=int, default=784, help='Input Dimension')
     parser.add_argument('--data', type=str, choices=['mnist'], help='Dataset to use')
     parser.add_argument('--binarize', action='store_true', help='Flag to use binarized data or not')
+    parser.add_argument('--augment_extend', action='store_true', help='Flag to use augmented train set')
     parser.add_argument('--epochs', type=int, default=10, help='Number of training epochs')
     parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
     parser.add_argument('--learning_rate', type=float, default=0.001, help='Learning rate for the optimizer')

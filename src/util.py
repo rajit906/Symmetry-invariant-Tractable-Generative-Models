@@ -2,18 +2,19 @@
 # Communications in Statistics - Theory and Methods, 45:2, 492-505, DOI: 10.1080/03610926.2013.830743
 # Source: https://github.com/jornpeters/integer_discrete_flows
 
+import sys
+sys.path.append('/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages')
 import torch
 from torch.utils.data import DataLoader, SubsetRandomSampler
 import random
 import torch.nn.functional as F
-import torch
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import re
 from sklearn import metrics
+import torchmetrics
 from torchmetrics.image.kid import KernelInceptionDistance
-from prdc import compute_prdc
 from PIL import Image
 from torchvision import transforms
 

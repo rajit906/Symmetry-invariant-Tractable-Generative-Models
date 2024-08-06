@@ -59,21 +59,27 @@ def evaluate_made(args):
                       'recalls': recalls.tolist()}
     
     # OOD (Visualization)
-    _, _, test_data = load_data('mnist', data_dir = data_dir, binarize = True, val = False)
+    train_data, _, test_data = load_data('mnist', data_dir = data_dir, binarize = True, val = False)
+    train_loader = DataLoader(train_data, batch_size=1, shuffle = True)
     test_loader = DataLoader(test_data, batch_size=1, shuffle = True)
-    _, _, test_data_omniglot = load_data('omniglot', data_dir = data_dir, binarize = True, val = False)
-    test_loader_omniglot = DataLoader(test_data_omniglot, batch_size=1, shuffle = False)
+    _, _, aug_test_data = load_data(aug_test_data, data_dir, binarize = True, augment = True, val = False)
+    aug_test_loader = DataLoader(aug_test_data, batch_size=1, shuffle=False)
+    _, _, test_data_emnist = load_data('emnist', data_dir = data_dir, binarize = True, val = False)
+    test_loader_emnist = DataLoader(test_data_emnist, batch_size=1, shuffle = False)
+    aug_nll_mnist = compute_nlls(model, aug_test_loader, model_type = model_type)
+    train_nll_mnist = compute_nlls(model, train_loader, model_type = model_type)
     nll_mnist= compute_nlls(model, test_loader, model_type = model_type)
-    nll_omniglot = compute_nlls(model, test_loader_omniglot, model_type = model_type)
+    nll_emnist = compute_nlls(model, test_loader_emnist, model_type = model_type)
 
     results['OOD_NLLs_test'] = {'mnist': nll_mnist.tolist(), 
-                                'omniglot': nll_omniglot.tolist()}
+                                'emnist': nll_emnist.tolist()}
+    results['train_nll_mnist'] = train_nll_mnist
+    results['aug_nll_mnist'] = aug_nll_mnist
 
     # OOD (ROC/AUC)
-
-    fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_omniglot \
-                        = roc_pc(test_loader = test_loader, test_loader_ood = test_loader_omniglot, 
-                        model = model, model_type = model_type, nll_mnist = nll_mnist, nll_ood = nll_omniglot)
+    fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_emnist \
+                        = roc_pc(test_loader = test_loader, test_loader_ood = test_loader_emnist, 
+                        model = model, model_type = model_type, nll_mnist = nll_mnist, nll_ood = nll_emnist)
     
     results['roc_pc'] = {'fpr': fpr.tolist(), 'tpr': tpr.tolist(), 'thresholds': thresholds.tolist(), 
                         'roc_auc': roc_auc, 'precision': precision.tolist(), 'recall': recall.tolist(),
@@ -81,14 +87,14 @@ def evaluate_made(args):
     
     # OOD (Typicality)
     train_data, val_data, test_data = load_data('mnist', data_dir = data_dir, binarize = True, val = True)
-    _, _, test_data_omniglot = load_data('omniglot', data_dir = data_dir, binarize = True, val = False)
+    _, _, test_data_emnist = load_data('emnist', data_dir = data_dir, binarize = True, val = False)
     results['typicality'] = {}
     Ms = [2,4,8,16,24,32,40,48,56,64]
     for M in Ms:
-        ood_mnist, ood_omniglot = typicality_test(model = model, train_data = train_data, val_data = val_data, 
-                                                test_data = test_data, test_data_ood = test_data_omniglot, 
+        ood_mnist, ood_emnist = typicality_test(model = model, train_data = train_data, val_data = val_data, 
+                                                test_data = test_data, test_data_ood = test_data_emnist, 
                                                 K=K, alpha=alpha, model_type=model_type, M=M)
-        results['typicality'][f'M={M}'] = {'mnist': ood_mnist, 'omniglot': ood_omniglot}
+        results['typicality'][f'M={M}'] = {'mnist': ood_mnist, 'emnist': ood_emnist}
     
     with open(result_dir + '/evaluate_results.json', 'w') as json_file:
         json.dump(results, json_file, indent=4)
@@ -139,18 +145,24 @@ def evaluate_pc(args):
                       'recalls': recalls.tolist()}
     
     # OOD (Visualization)
-    _, _, test_data = load_data('mnist', data_dir = data_dir, binarize = False, val = False)
+    train_data, _, test_data = load_data('mnist', data_dir = data_dir, binarize = False, val = False)
+    train_loader = DataLoader(train_data, batch_size=1, shuffle = True)
     test_loader = DataLoader(test_data, batch_size=1, shuffle = True)
+    _, _, aug_test_data = load_data(aug_test_data, data_dir, binarize = False, augment = True, val = False)
+    aug_test_loader = DataLoader(aug_test_data, batch_size=1, shuffle=False)
     _, _, test_data_fashion = load_data('fashion', data_dir = data_dir, binarize = False, val = False)
     test_loader_fashion = DataLoader(test_data_fashion, batch_size=1, shuffle = False)
-    nll_mnist= compute_nlls(model, test_loader, model_type = model_type)
+    train_nll_mnist = compute_nlls(model, train_loader, model_type = model_type)
+    nll_mnist = compute_nlls(model, test_loader, model_type = model_type)
+    aug_nll_mnist = compute_nlls(model, aug_test_loader, model_type = model_type)
     nll_fashion = compute_nlls(model, test_loader_fashion, model_type = model_type)
 
     results['OOD_NLLs_test'] = {'mnist': nll_mnist.tolist(), 
                                 'fashion': nll_fashion.tolist()}
+    results['train_nll_mnist'] = train_nll_mnist
+    results['aug_nll_mnist'] = aug_nll_mnist
 
     # OOD (ROC/AUC)
-
     fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_fashion \
                         = roc_pc(test_loader = test_loader, test_loader_ood = test_loader_fashion, 
                         model = model, model_type = model_type, nll_mnist = nll_mnist, nll_ood = nll_fashion)
