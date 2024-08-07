@@ -41,7 +41,9 @@ def run(args):
     num_input_units = args.num_input_units
     num_sum_units = args.num_sum_units
     height = args.height
-    config = {'seed': seed, 'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 'num_input_units': num_input_units, 'num_sum_units': num_sum_units}
+    config = {'seed': seed, 'input_dim': input_dim, 'lr': lr, 'num_epochs': num_epochs, 
+              'max_patience': patience, 'batch_size': batch_size, 'lambda': lam, 
+              'num_input_units': num_input_units, 'num_sum_units': num_sum_units}
     #run = wandb.init(entity="rajpal906")#entity="rajpal906", project="MADE", name="unregularized", id="1", config=hyperparameters, settings=wandb.Settings(start_method="fork"))
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     hyperparams = f"S{seed}_E{num_epochs}_BS{batch_size}_LR{lr:.0e}_H{height}_NSM{num_sum_units}_NIM{num_input_units}_ID{input_dim}_{data}"

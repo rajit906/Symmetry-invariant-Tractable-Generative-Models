@@ -1,7 +1,3 @@
-# Chakraborty & Chakravarty, "A new discrete probability distribution with integer support on (−∞, ∞)",
-# Communications in Statistics - Theory and Methods, 45:2, 492-505, DOI: 10.1080/03610926.2013.830743
-# Source: https://github.com/jornpeters/integer_discrete_flows
-
 import sys
 sys.path.append('/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages')
 import torch
