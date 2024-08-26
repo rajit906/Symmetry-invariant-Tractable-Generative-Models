@@ -1,4 +1,5 @@
 import json
+import time
 import argparse
 import torch
 from torch.utils.data import DataLoader
@@ -8,7 +9,8 @@ from data import load_data
 from torchvision import transforms
 import torchvision.models as models
 from precision_recall import prd_score
-from util import compute_KID, roc_pc, typicality_test, compute_nlls, preprocess_samples, sample_model, extract_features
+from unittest.mock import patch
+from util import kid_score, roc_pc, typicality_test, compute_nlls, preprocess_samples, sample_model, extract_features
 
 preprocess = transforms.Compose([
     transforms.Resize(299),
@@ -33,36 +35,47 @@ def evaluate_made(args):
                          'subset_size': subset_size, 'K': K, 'alpha': alpha}
 
     torch.manual_seed(seed)
-    model= torch.load(result_dir + '/model_best.model', map_location = device).to(device)
+    model = torch.load(result_dir + '/model_best.model', map_location = device).to(device)
     model.eval()
 
     # Sample Quality (KID)
+    start_time = time.time()
     _, _, test_data = load_data('mnist', data_dir = data_dir, binarize = True, eval = True, val = False)
     test_loader = DataLoader(test_data, batch_size = num_samples, shuffle = True)
     true = next(iter(test_loader))[0].to(device)
-    samples = sample_model(model = model, n = num_samples, model_type = model_type)
-    samples = preprocess_samples(samples, preprocess)
-    kid_mean, kid_std = compute_KID(true, samples, subset_size = subset_size, device = device)
-    results['KID'] = {'mean': kid_mean, 
-                      'std': kid_std}
-    
-    # Sample Quality (PRD)
-    inception_model = models.inception_v3(pretrained=True) 
-    inception_model.eval()  # Set the model to evaluation mode
+    samples = sample_model(model = model, n = num_samples, model_type = model_type).to(device)
+    samples = preprocess_samples(samples, preprocess).to(device)
+    n_subsets = num_samples // subset_size
+
+    inception_model = models.inception_v3(pretrained=False)
+    state_dict = torch.load('./inception_v3_google-1a9a5a14.pth')
+    inception_model.load_state_dict(state_dict)
     inception_model.fc = torch.nn.Identity()
+    inception_model.to(device)
+    inception_model.eval()
     real_features = extract_features(true, inception_model)
     generated_features = extract_features(samples, inception_model)
-
+    kids, kid_stats = kid_score(torch.tensor(real_features, dtype=torch.float32).to(device),  
+                                torch.tensor(generated_features, dtype=torch.float32).to(device), 
+                                n_subsets = n_subsets, subset_size = subset_size)
+    results['KID'] = {'kids': kids.tolist(), 
+                      'std': kid_stats}
+    end_time = time.time()
+    print('Sampling Time:' + f'{end_time-start_time}')
+    
+    # Sample Quality (PRD)
     precisions, recalls = prd_score.compute_prd_from_embedding(real_features, generated_features)
 
     results['PRD'] = {'precisions': precisions.tolist(), 
                       'recalls': recalls.tolist()}
+    end_time = time.time()
+    print('PRD Time:' + f'{end_time-start_time}')
     
     # OOD (Visualization)
     train_data, _, test_data = load_data('mnist', data_dir = data_dir, binarize = True, val = False)
     train_loader = DataLoader(train_data, batch_size=1, shuffle = True)
     test_loader = DataLoader(test_data, batch_size=1, shuffle = True)
-    _, _, aug_test_data = load_data(aug_test_data, data_dir, binarize = True, augment = True, val = False)
+    _, _, aug_test_data = load_data('mnist', data_dir, binarize = True, augment = True, val = False)
     aug_test_loader = DataLoader(aug_test_data, batch_size=1, shuffle=False)
     _, _, test_data_emnist = load_data('emnist', data_dir = data_dir, binarize = True, val = False)
     test_loader_emnist = DataLoader(test_data_emnist, batch_size=1, shuffle = False)
@@ -73,8 +86,10 @@ def evaluate_made(args):
 
     results['OOD_NLLs_test'] = {'mnist': nll_mnist.tolist(), 
                                 'emnist': nll_emnist.tolist()}
-    results['train_nll_mnist'] = train_nll_mnist
-    results['aug_nll_mnist'] = aug_nll_mnist
+    results['train_nll_mnist'] = train_nll_mnist.tolist()
+    results['aug_nll_mnist'] = aug_nll_mnist.tolist()
+    end_time = time.time()
+    print('Viz Time:' + f'{end_time-start_time}')
 
     # OOD (ROC/AUC)
     fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_emnist \
@@ -84,7 +99,8 @@ def evaluate_made(args):
     results['roc_pc'] = {'fpr': fpr.tolist(), 'tpr': tpr.tolist(), 'thresholds': thresholds.tolist(), 
                         'roc_auc': roc_auc, 'precision': precision.tolist(), 'recall': recall.tolist(),
                         'pr_thesholds': pr_thresholds.tolist(),'pr_auc': pr_auc}
-    
+    end_time = time.time()
+    print('ROC Time:' + f'{end_time-start_time}')
     # OOD (Typicality)
     train_data, val_data, test_data = load_data('mnist', data_dir = data_dir, binarize = True, val = True)
     _, _, test_data_emnist = load_data('emnist', data_dir = data_dir, binarize = True, val = False)
@@ -95,7 +111,8 @@ def evaluate_made(args):
                                                 test_data = test_data, test_data_ood = test_data_emnist, 
                                                 K=K, alpha=alpha, model_type=model_type, M=M)
         results['typicality'][f'M={M}'] = {'mnist': ood_mnist, 'emnist': ood_emnist}
-    
+    end_time = time.time()
+    print('Typicality Time:' + f'{end_time-start_time}')
     with open(result_dir + '/evaluate_results.json', 'w') as json_file:
         json.dump(results, json_file, indent=4)
 
@@ -123,32 +140,47 @@ def evaluate_pc(args):
     model = (circuit, pf_circuit)
 
     # Sample Quality (KID)
+    start_time = time.time()
     _, _, test_data = load_data('mnist', data_dir = data_dir, binarize = False, eval = True, val = False)
     test_loader = DataLoader(test_data, batch_size = num_samples, shuffle = True)
     true = next(iter(test_loader))[0].to(device)
-    samples = sample_model(model = model, n = num_samples, model_type = model_type).to(float)
-    samples = preprocess_samples(samples, preprocess)
-    kid_mean, kid_std = compute_KID(true, samples, subset_size = subset_size, device = device)
-    results['KID'] = {'mean': kid_mean, 
-                      'std': kid_std}
-    
-    # Sample Quality (PRD)
-    inception_model = models.inception_v3(pretrained=True) 
-    inception_model.eval()  # Set the model to evaluation mode
+    samples = sample_model(model = model, n = num_samples//10, model_type = 'PC').to(device)
+    for i in range(9):
+        samples = torch.cat((samples, sample_model(model = model, n = num_samples//10, model_type = 'PC')), dim = 0)
+    samples = samples.to(torch.float32).to(device)
+    samples = preprocess_samples(samples, preprocess).to(device)
+    n_subsets = num_samples // subset_size
+
+    inception_model = models.inception_v3(pretrained=False)
+    state_dict = torch.load('./inception_v3_google-1a9a5a14.pth')
+    inception_model.load_state_dict(state_dict)
     inception_model.fc = torch.nn.Identity()
+    inception_model.to(device)
+    inception_model.eval()
     real_features = extract_features(true, inception_model)
     generated_features = extract_features(samples, inception_model)
-
+    kids, kid_stats = kid_score(torch.tensor(real_features, dtype=torch.float32).to(device),  
+                                torch.tensor(generated_features, dtype=torch.float32).to(device), 
+                                n_subsets = n_subsets, subset_size = subset_size)
+    results['KID'] = {'kids': kids.tolist(), 
+                      'std': kid_stats}
+    end_time = time.time()
+    print('Sampling Time:' + f'{end_time-start_time}')
+    
+    # Sample Quality (PRD)
+    start_time = time.time()
     precisions, recalls = prd_score.compute_prd_from_embedding(real_features, generated_features)
-
+    end_time = time.time()
+    print('PRD:' + f'{end_time-start_time}')
     results['PRD'] = {'precisions': precisions.tolist(), 
                       'recalls': recalls.tolist()}
     
     # OOD (Visualization)
+    start_time = time.time()
     train_data, _, test_data = load_data('mnist', data_dir = data_dir, binarize = False, val = False)
     train_loader = DataLoader(train_data, batch_size=1, shuffle = True)
     test_loader = DataLoader(test_data, batch_size=1, shuffle = True)
-    _, _, aug_test_data = load_data(aug_test_data, data_dir, binarize = False, augment = True, val = False)
+    _, _, aug_test_data = load_data('mnist', data_dir, binarize = False, augment = True, val = False)
     aug_test_loader = DataLoader(aug_test_data, batch_size=1, shuffle=False)
     _, _, test_data_fashion = load_data('fashion', data_dir = data_dir, binarize = False, val = False)
     test_loader_fashion = DataLoader(test_data_fashion, batch_size=1, shuffle = False)
@@ -156,11 +188,13 @@ def evaluate_pc(args):
     nll_mnist = compute_nlls(model, test_loader, model_type = model_type)
     aug_nll_mnist = compute_nlls(model, aug_test_loader, model_type = model_type)
     nll_fashion = compute_nlls(model, test_loader_fashion, model_type = model_type)
+    end_time = time.time()
+    print('Viz:' + f'{end_time-start_time}')
 
     results['OOD_NLLs_test'] = {'mnist': nll_mnist.tolist(), 
                                 'fashion': nll_fashion.tolist()}
-    results['train_nll_mnist'] = train_nll_mnist
-    results['aug_nll_mnist'] = aug_nll_mnist
+    results['train_nll_mnist'] = train_nll_mnist.tolist()
+    results['aug_nll_mnist'] = aug_nll_mnist.tolist()
 
     # OOD (ROC/AUC)
     fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_fashion \
@@ -172,6 +206,7 @@ def evaluate_pc(args):
                         'pr_thesholds': pr_thresholds.tolist(),'pr_auc': pr_auc}
     
     # OOD (Typicality)
+    start_time = time.time()
     train_data, val_data, test_data = load_data('mnist', data_dir = data_dir, binarize = False, val = True)
     _, _, test_data_fashion = load_data('fashion', data_dir = data_dir, binarize = False, val = False)
     results['typicality'] = {}
@@ -181,7 +216,8 @@ def evaluate_pc(args):
                                                 test_data = test_data, test_data_ood = test_data_fashion, 
                                                 K=K, alpha=alpha, model_type=model_type, M=M)
         results['typicality'][f'M={M}'] = {'mnist': ood_mnist, 'fashion': ood_fashion}
-    
+    end_time = time.time()
+    print('Typicality:' + f'{end_time-start_time}')
     with open(result_dir + '/evaluate_results.json', 'w') as json_file:
         json.dump(results, json_file, indent=4)
 

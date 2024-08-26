@@ -1,20 +1,24 @@
-from tqdm import tqdm
 import numpy as np
-from PIL import Image
-from math import log, sqrt, pi
-
 import argparse
 
 import torch
 from torch import nn, optim
-from torch.autograd import Variable, grad
-from torch.utils.data import DataLoader
-from torchvision import datasets, transforms, utils
-
-from model import Glow
+from models import Glow
+from train_GLOW import train, evaluation
 
 def run(args):
-    pass
+    n_flow = args.n_flow
+    n_block = args.n_block
+    affine = args.affine
+    no_lu = args.no_lu
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model_single = Glow(
+        3, n_flow, n_block, affine=affine, conv_lu=not no_lu
+    )
+    model = nn.DataParallel(model_single)
+    model = model.to(device)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    train(args, model, optimizer)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Glow trainer")
@@ -40,14 +44,4 @@ if __name__ == "__main__":
     parser.add_argument("path", metavar="PATH", type=str, help="Path to image directory")
 
     args = parser.parse_args()
-
-    model_single = Glow(
-        3, args.n_flow, args.n_block, affine=args.affine, conv_lu=not args.no_lu
-    )
-    model = nn.DataParallel(model_single)
-    # model = model_single
-    model = model.to(device)
-
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
-
-    train(args, model, optimizer)
+    run(args)

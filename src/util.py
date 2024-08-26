@@ -12,7 +12,9 @@ from sklearn import metrics
 import torchmetrics
 from torchmetrics.image.kid import KernelInceptionDistance
 from PIL import Image
+from tqdm import tqdm
 from torchvision import transforms
+from math import log, sqrt, pi
 
 
 ### Integer Discrete Flows
@@ -270,7 +272,7 @@ def compute_nlls(model, data_loader, model_type = 'MADE'):
         circuit, pf_circuit = model
         circuit = circuit.to(device)
         pf_circuit = pf_circuit.to(device)
-        for _, (batch, _) in enumerate(data_loader):
+        for i, (batch, _) in enumerate(data_loader):
             batch = batch.to(device)
             if len(batch.shape) == 2:
                     batch = batch.unsqueeze(dim=1)
@@ -278,39 +280,99 @@ def compute_nlls(model, data_loader, model_type = 'MADE'):
             log_pf = pf_circuit()
             loss = -torch.mean(log_output - log_pf)
             nlls.append(loss.item())
+            if i >= 15:  # Stop after collecting 100 images
+                break
     return np.array(nlls)
 
 
 def roc_pc(test_loader, test_loader_ood, model, model_type, nll_mnist = None, nll_ood = None):
-    if not (nll_mnist.tolist() and nll_ood.tolist()):
+    if nll_mnist is None:
         nll_mnist = compute_nlls(model, test_loader, model_type=model_type)
+    if nll_ood is None:
         nll_ood = compute_nlls(model, test_loader_ood, model_type=model_type)
-    nll_ood = nll_ood[:len(nll_mnist)]
-    max_nll_mnist = max(nll_mnist)
-    max_nll_ood = max(nll_ood)
-    nlls_mnist = [(nll/max_nll_mnist, 1) for nll in nll_mnist]
-    nlls_ood = [(nll/max_nll_ood, 0) for nll in nll_ood]
-    nlls = nlls_mnist + nlls_ood
-    nlls = sorted(nlls, key=lambda x: x[0], reverse = True)
-    nll_scores = [val[0] for val in nlls]
-    nll_labels = [val[1] for val in nlls]
-    fpr, tpr, thresholds = metrics.roc_curve(nll_labels, nll_scores, pos_label=1)
-    roc_auc = metrics.roc_auc_score(nll_labels, nll_scores)
-    precision, recall, pr_thresholds = metrics.precision_recall_curve(nll_labels, nll_scores)
+    nlls_mnist = nll_mnist.tolist()
+    nlls_ood = nll_ood[:len(nll_mnist)].tolist()
+    nlls = np.array(nlls_mnist + nlls_ood)
+    labels = np.array([1] * len(nlls_mnist) + [0] * len(nlls_ood))
+    fpr, tpr, thresholds = metrics.roc_curve(labels, -nlls, pos_label=1) #Change NLL to LL by negation
+    roc_auc = metrics.auc(fpr, tpr)
+    precision, recall, pr_thresholds = metrics.precision_recall_curve(labels, -nlls) #Change NLL to LL by negation
     pr_auc = metrics.auc(recall, precision)
     return fpr, tpr, thresholds, roc_auc, precision, recall, pr_thresholds, pr_auc, nll_mnist, nll_ood
-# Specify the root directory to start the search
-#root_directory = 'Cirkits/'  # Change this to your target directory
 
-#process_directory(root_directory)
-
-def compute_KID(true, samples, subset_size, device, feature = 2048):
-    metric = KernelInceptionDistance(feature=feature, subset_size=subset_size, normalize=True,
-                                    gamma = None, coef = 1.0, degree = 3).to(device)
-    metric.update(true, real=True)
-    metric.update(samples, real=False)
+def compute_KID(true, samples, subset_size, device, inception_model, feature = 2048):
+    metric = KernelInceptionDistance(feature=feature, subset_size=subset_size, #normalize=True,
+                                    gamma = None, coef = 1.0, degree = 3)
+    metric.inception = inception_model
+    metric.to(device)
+    metric.update(true.to(torch.float32), real=True)
+    metric.update(samples.to(torch.float32), real=False)
     mean, std = metric.compute()
     return mean.item(), std.item()
+
+
+def kid_score(
+        real_features: torch.Tensor,
+        fake_features: torch.Tensor,
+        n_subsets,
+        subset_size
+):
+    """Computes the KID score. Core implementation taken from
+    TorchMetrics lib (v0.8.2) https://torchmetrics.readthedocs.io/en/v0.8.2/image/kernel_inception_distance.html.
+    """
+    def poly_kernel(
+            f1: torch.Tensor, f2: torch.Tensor,
+            degree: int = 3, gamma = None, coef: float = 1.0) -> torch.Tensor:
+        """Adapted from `KID Score`_"""
+        if gamma is None:
+            gamma = 1.0 / f1.shape[1]
+        kernel = (f1 @ f2.T * gamma + coef) ** degree
+        return kernel
+
+    def maximum_mean_discrepancy(k_xx: torch.Tensor, k_xy: torch.Tensor, k_yy: torch.Tensor) -> torch.Tensor:
+        m = k_xx.shape[0]
+        diag_x = torch.diag(k_xx)
+        diag_y = torch.diag(k_yy)
+
+        kt_xx_sums = k_xx.sum(dim=-1) - diag_x
+        kt_yy_sums = k_yy.sum(dim=-1) - diag_y
+        k_xy_sums = k_xy.sum(dim=0)
+
+        kt_xx_sum = kt_xx_sums.sum()
+        kt_yy_sum = kt_yy_sums.sum()
+        k_xy_sum = k_xy_sums.sum()
+
+        value = (kt_xx_sum + kt_yy_sum) / (m * (m - 1))
+        value -= 2 * k_xy_sum / (m ** 2)
+        return value
+
+    def poly_mmd(
+            f_real: torch.Tensor, f_fake: torch.Tensor,
+            degree: int = 3, gamma = None, coef: float = 1.0
+    ) -> torch.Tensor:
+        """Adapted from `KID Score`_"""
+        k_11 = poly_kernel(f_real, f_real, degree, gamma, coef)
+        k_22 = poly_kernel(f_fake, f_fake, degree, gamma, coef)
+        k_12 = poly_kernel(f_real, f_fake, degree, gamma, coef)
+        return maximum_mean_discrepancy(k_11, k_12, k_22)
+    
+    # Normalization
+    real_features = torch.div(real_features, torch.norm(real_features, p=2, dim=1, keepdim=True))
+    fake_features = torch.div(fake_features, torch.norm(fake_features, p=2, dim=1, keepdim=True))
+
+    n_samples_real = real_features.shape[0]
+    n_samples_fake = fake_features.shape[0]
+    kid_scores_ = []
+    kappa, gamma, alpha = 3 , None, 1.0 # These are default values
+    for _ in tqdm(range(n_subsets), desc='Computing KID Score', leave=False):
+        perm = torch.randperm(n_samples_real)
+        f_real = real_features[perm[:subset_size]]
+        perm = torch.randperm(n_samples_fake)
+        f_fake = fake_features[perm[:subset_size]]
+        o = poly_mmd(f_real, f_fake, degree=kappa, gamma=gamma, coef=alpha)
+        kid_scores_.append(o)
+    kid = torch.stack(kid_scores_).cpu().numpy()
+    return kid, (np.mean(kid).item(), np.std(kid).item())
 
 def preprocess_single_image(image, preprocess):
     image = transforms.ToPILImage()(image.squeeze(0))
@@ -375,3 +437,32 @@ def typicality_test(model, train_data, val_data, test_data, test_data_ood, K, al
         ood_mnist, _ = OOD_detection(model, test_loader, nll_trained_model, epsilon, model_type)
         ood_data, _ = OOD_detection(model, test_loader_ood, nll_trained_model, epsilon, model_type)
         return ood_mnist, ood_data
+
+def calc_z_shapes(n_channel, input_size, n_flow, n_block):
+    z_shapes = []
+
+    for i in range(n_block - 1):
+        input_size //= 2
+        n_channel *= 2
+
+        z_shapes.append((n_channel, input_size, input_size))
+
+    input_size //= 2
+    z_shapes.append((n_channel * 4, input_size, input_size))
+
+    return z_shapes
+
+
+def calc_loss(log_p, logdet, image_size, n_bins):
+    # log_p = calc_log_p([z_list])
+    n_pixel = image_size * image_size * 3
+
+    loss = -log(n_bins) * n_pixel
+    loss = loss + logdet + log_p
+
+    return (
+        (-loss / (log(2) * n_pixel)).mean(),
+        (log_p / (log(2) * n_pixel)).mean(),
+        (logdet / (log(2) * n_pixel)).mean(),
+    )
+
